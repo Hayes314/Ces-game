@@ -45,11 +45,7 @@
     -webkit-user-drag: none;
   }
 
-  /* 只允許 AI 訊息區域可滾動，但仍不可選取文字 */
-  .ai-msg {
-    user-select: none;
-    -webkit-user-select: none;
-  }
+  .ai-msg { user-select: none; -webkit-user-select: none; }
 
   body {
     background: radial-gradient(ellipse at 20% 0%, #0e2336 0%, #050b14 70%);
@@ -323,7 +319,7 @@
   .ai-tip { font-size: 0.66rem; color: var(--text-dim); text-align: right; min-height: 14px; flex-shrink: 0; }
 
   /* ============================================================
-     底部控制栏：左摇杆 + 右跳跃
+     底部控制栏
      ============================================================ */
   .controls-row {
     flex: 0 0 auto;
@@ -372,6 +368,17 @@
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
+  /* 中间停止区可视指示 */
+  .joystick-base .deadzone-visual {
+    position: absolute;
+    width: 44%;
+    height: 56%;
+    border-radius: 50%;
+    border: 1px dashed rgba(77, 216, 255, 0.18);
+    pointer-events: none;
+    z-index: 1;
+  }
+
   .joystick-base::before {
     content: '';
     position: absolute;
@@ -388,7 +395,7 @@
     position: absolute;
     inset: 4px 14px;
     border-radius: 50%;
-    border: 1px dashed rgba(77, 216, 255, 0.18);
+    border: 1px dashed rgba(77, 216, 255, 0.12);
     pointer-events: none;
   }
 
@@ -413,7 +420,7 @@
       inset 0 2px 4px rgba(255, 255, 255, 0.55),
       inset 0 -2px 5px rgba(0, 0, 0, 0.2);
     transform: translate(0, 0);
-    transition: transform 0.06s ease-out, box-shadow 0.15s;
+    transition: transform 0.06s ease-out, box-shadow 0.15s, background 0.15s, opacity 0.15s;
     pointer-events: none;
     z-index: 2;
     display: flex;
@@ -430,7 +437,23 @@
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6);
   }
 
-  .joystick-zone.active .joystick-knob {
+  /* ★ 摇杆帽在中间死区时变暗、缩小 ★ */
+  .joystick-knob.in-deadzone {
+    background: radial-gradient(circle at 40% 30%, #4a9bbf 0%, #1a6a8a 50%, #0d4a66 100%);
+    opacity: 0.72;
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.45),
+      inset 0 1px 3px rgba(255, 255, 255, 0.3),
+      inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .joystick-knob.in-deadzone::before {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .joystick-zone.active .joystick-knob:not(.in-deadzone) {
     transition: box-shadow 0.15s;
     box-shadow:
       0 4px 14px rgba(0, 0, 0, 0.6),
@@ -552,9 +575,6 @@
     .ai-msg .detail-header { margin-bottom: 7px; padding-bottom: 6px; gap: 5px; }
   }
 
-  /* ============================================================
-     手机竖屏（≤820px，portrait）
-     ============================================================ */
   @media (max-width: 820px) and (orientation: portrait) {
     .app { padding: 7px; gap: 7px; padding-bottom: calc(7px + env(safe-area-inset-bottom)); }
 
@@ -586,7 +606,6 @@
     .ai-msg .detail-list li { font-size: 0.62rem; line-height: 1.5; padding-left: 12px; }
     .ai-msg .detail-footer { font-size: 0.58rem; }
 
-    /* ★ 手机竖屏摇杆：加宽 ★ */
     .controls-row {
       padding: 8px 14px;
       padding-bottom: calc(8px + env(safe-area-inset-bottom));
@@ -594,24 +613,13 @@
       border-radius: 18px;
     }
 
-    .joystick-zone {
-      width: 180px;
-      height: 140px;
-    }
-
-    .joystick-base {
-      width: 156px;
-      height: 116px;
-    }
-
-    .joystick-knob {
-      width: 52px;
-      height: 52px;
-    }
-
+    .joystick-zone { width: 180px; height: 140px; }
+    .joystick-base { width: 156px; height: 116px; }
+    .joystick-knob { width: 52px; height: 52px; }
     .joystick-knob::before { width: 12px; height: 12px; }
     .joystick-base::before { inset: 10px 18px; }
     .joystick-base::after { inset: 3px 12px; }
+    .joystick-base .deadzone-visual { width: 46%; height: 58%; }
 
     .jump-btn {
       width: 150px;
@@ -633,9 +641,6 @@
     .jump-hint { display: none; }
   }
 
-  /* ============================================================
-     小手机竖屏（≤520px）
-     ============================================================ */
   @media (max-width: 520px) and (orientation: portrait) {
     .app { padding: 5px; gap: 5px; padding-bottom: calc(5px + env(safe-area-inset-bottom)); }
     .topbar { padding: 5px 8px; gap: 6px; border-radius: 10px; }
@@ -679,7 +684,6 @@
     .ai-msg .detail-list li::before { font-size: 0.55rem; }
     .ai-msg .detail-footer { font-size: 0.54rem; margin-top: 6px; padding-top: 4px; }
 
-    /* ★ 小手机竖屏摇杆：加宽 ★ */
     .controls-row {
       padding: 6px 12px;
       padding-bottom: calc(6px + env(safe-area-inset-bottom));
@@ -687,24 +691,13 @@
       border-radius: 16px;
     }
 
-    .joystick-zone {
-      width: 160px;
-      height: 122px;
-    }
-
-    .joystick-base {
-      width: 138px;
-      height: 102px;
-    }
-
-    .joystick-knob {
-      width: 46px;
-      height: 46px;
-    }
-
+    .joystick-zone { width: 160px; height: 122px; }
+    .joystick-base { width: 138px; height: 102px; }
+    .joystick-knob { width: 46px; height: 46px; }
     .joystick-knob::before { width: 11px; height: 11px; }
     .joystick-base::before { inset: 9px 16px; }
     .joystick-base::after { inset: 3px 10px; }
+    .joystick-base .deadzone-visual { width: 48%; height: 60%; }
 
     .jump-btn {
       width: 130px;
@@ -724,9 +717,6 @@
     .jump-hint { display: none; }
   }
 
-  /* ============================================================
-     超小屏（≤400px，portrait）
-     ============================================================ */
   @media (max-width: 400px) and (orientation: portrait) {
     .ai-panel { flex: 0 0 115px; padding: 5px; gap: 4px; }
     .ai-avatar { width: 20px; height: 20px; font-size: 0.66rem; }
@@ -747,23 +737,12 @@
       border-radius: 14px;
     }
 
-    .joystick-zone {
-      width: 145px;
-      height: 110px;
-    }
-
-    .joystick-base {
-      width: 126px;
-      height: 92px;
-    }
-
-    .joystick-knob {
-      width: 42px;
-      height: 42px;
-    }
-
+    .joystick-zone { width: 145px; height: 110px; }
+    .joystick-base { width: 126px; height: 92px; }
+    .joystick-knob { width: 42px; height: 42px; }
     .joystick-knob::before { width: 10px; height: 10px; }
     .joystick-base::before { inset: 8px 14px; }
+    .joystick-base .deadzone-visual { width: 50%; height: 62%; }
 
     .jump-btn {
       width: 118px;
@@ -777,9 +756,6 @@
     .jump-text { font-size: 0.82rem; }
   }
 
-  /* ============================================================
-     手机横屏（高度≤560px）
-     ============================================================ */
   @media (orientation: landscape) and (max-height: 560px) {
     .app {
       padding: 6px;
@@ -816,7 +792,6 @@
     .ai-msg .detail-list li { font-size: 0.63rem; line-height: 1.5; padding-left: 12px; }
     .ai-msg .detail-footer { font-size: 0.56rem; }
 
-    /* ★ 手机横屏摇杆：加宽 ★ */
     .controls-row {
       padding: 5px 14px;
       padding-bottom: calc(5px + env(safe-area-inset-bottom));
@@ -824,24 +799,13 @@
       border-radius: 14px;
     }
 
-    .joystick-zone {
-      width: 150px;
-      height: 100px;
-    }
-
-    .joystick-base {
-      width: 132px;
-      height: 86px;
-    }
-
-    .joystick-knob {
-      width: 42px;
-      height: 42px;
-    }
-
+    .joystick-zone { width: 150px; height: 100px; }
+    .joystick-base { width: 132px; height: 86px; }
+    .joystick-knob { width: 42px; height: 42px; }
     .joystick-knob::before { width: 10px; height: 10px; }
     .joystick-base::before { inset: 8px 15px; }
     .joystick-base::after { inset: 2px 9px; }
+    .joystick-base .deadzone-visual { width: 50%; height: 62%; }
 
     .jump-btn {
       width: 140px;
@@ -861,9 +825,6 @@
     .jump-hint { display: none; }
   }
 
-  /* ============================================================
-     极矮横屏（高度≤420px）
-     ============================================================ */
   @media (orientation: landscape) and (max-height: 420px) {
     .app { padding: 4px; gap: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); }
     .topbar { padding: 2px 7px; }
@@ -888,6 +849,7 @@
     .joystick-knob::before { width: 9px; height: 9px; }
     .joystick-base::before { inset: 6px 13px; }
     .joystick-base::after { inset: 2px 8px; }
+    .joystick-base .deadzone-visual { width: 52%; height: 64%; }
 
     .jump-btn {
       width: 130px;
@@ -958,10 +920,10 @@
     </aside>
   </div>
 
-  <!-- ===== 底部：左摇杆 + 右跳跃 ===== -->
   <div class="controls-row">
     <div class="joystick-zone" id="joystickZone" aria-label="移動搖桿">
       <div class="joystick-base" id="joystickBase">
+        <div class="deadzone-visual"></div>
         <div class="joystick-knob" id="joystickKnob"></div>
       </div>
     </div>
@@ -977,7 +939,7 @@
 <script>
 /* ============================================================
    香港經濟貢獻 · 無限爬升
-   加宽摇杆 + 全页禁止选取
+   摇杆中间死区停止 + 渐进速度 + 全页禁止选取
    ============================================================ */
 
 /* ---------- 逻辑尺寸 ---------- */
@@ -1052,23 +1014,26 @@ function hapticTap() {
 }
 
 /* ============================================================
-   摇杆逻辑（加宽、死区缩小）
+   摇杆逻辑：加大中间死区 + 渐进速度
    ============================================================ */
 const joystickState = {
   active: false,
   pointerId: null,
   centerX: 0,
   centerY: 0,
-  maxRadius: 65,      // 加宽后默认加大，运行时按实际尺寸更新
-  deadzone: 0.10      // 死区从 0.18 缩小到 0.10，左右更易触发
+  maxRadius: 65,
+  deadzone: 0.28,        // ★ 中间停止区：28%（原来 0.10）
+  fullSpeedZone: 0.82    // 超过 82% 才达到全速
 };
+
+/* 摇杆移动速度倍率：0 = 停止，1 = 全速 */
+let joystickMoveScale = 1;
 
 function refreshJoystickMetrics() {
   const zoneRect = joystickZone.getBoundingClientRect();
   const baseRect = joystickBase.getBoundingClientRect();
   joystickState.centerX = zoneRect.left + zoneRect.width / 2;
   joystickState.centerY = zoneRect.top + zoneRect.height / 2;
-  // ★ 摇杆可移动半径加大到基座的 0.82 倍（原本 0.72）
   joystickState.maxRadius = (baseRect.width / 2) * 0.82;
 }
 
@@ -1078,6 +1043,7 @@ function setJoystickKnob(dx, dy) {
 
 function resetJoystickKnob() {
   setJoystickKnob(0, 0);
+  joystickKnob.classList.add('in-deadzone');
   joystickZone.classList.remove('active');
 }
 
@@ -1095,15 +1061,27 @@ function handleJoystickInput(clientX, clientY) {
   setJoystickKnob(dx, dy);
 
   const nx = dx / maxR;
-  if (nx < -joystickState.deadzone) {
-    keys.left = true;
-    keys.right = false;
-  } else if (nx > joystickState.deadzone) {
-    keys.right = true;
+  const absNx = Math.abs(nx);
+
+  if (absNx < joystickState.deadzone) {
+    /* ★ 中间停止区：完全不移动 ★ */
     keys.left = false;
+    keys.right = false;
+    joystickMoveScale = 0;
+    joystickKnob.classList.add('in-deadzone');
   } else {
-    keys.left = false;
-    keys.right = false;
+    /* 死区外：从 35% 到 100% 渐进加速 */
+    const t = (absNx - joystickState.deadzone) / (joystickState.fullSpeedZone - joystickState.deadzone);
+    joystickMoveScale = Math.min(1, Math.max(0.35, t));
+
+    if (nx < 0) {
+      keys.left = true;
+      keys.right = false;
+    } else {
+      keys.right = true;
+      keys.left = false;
+    }
+    joystickKnob.classList.remove('in-deadzone');
   }
 }
 
@@ -1136,6 +1114,7 @@ function releaseJoystick(e) {
   joystickState.pointerId = null;
   keys.left = false;
   keys.right = false;
+  joystickMoveScale = 1;
   resetJoystickKnob();
 }
 
@@ -1148,13 +1127,19 @@ joystickZone.addEventListener('contextmenu', e => e.preventDefault());
 function updateJoystickVisualFromKeys() {
   if (joystickState.active) return;
   let dx = 0;
-  if (keys.left) dx = -joystickState.maxRadius * 0.78;
-  else if (keys.right) dx = joystickState.maxRadius * 0.78;
+  if (keys.left) dx = -joystickState.maxRadius * 0.85;
+  else if (keys.right) dx = joystickState.maxRadius * 0.85;
 
   setJoystickKnob(dx, 0);
+  joystickMoveScale = 1;
 
-  if (keys.left || keys.right) joystickZone.classList.add('active');
-  else joystickZone.classList.remove('active');
+  if (keys.left || keys.right) {
+    joystickZone.classList.add('active');
+    joystickKnob.classList.remove('in-deadzone');
+  } else {
+    joystickZone.classList.remove('active');
+    joystickKnob.classList.add('in-deadzone');
+  }
 }
 
 /* ============================================================
@@ -1182,7 +1167,6 @@ function resizeCanvas() {
   badges = badges.filter(b => b.x < CW);
 
   refreshJoystickMetrics();
-
   draw();
 }
 
@@ -1449,6 +1433,7 @@ function initGame() {
   typesCollected = new Set();
   BADGE_TYPES.forEach(t => { knowledgeShown[t.id] = []; });
   keys.left = false; keys.right = false;
+  joystickMoveScale = 1;
 
   altitudeDisplay.textContent = '0';
   badgeDisplay.textContent = '0';
@@ -1521,8 +1506,13 @@ function doJump() {
    ============================================================ */
 function update() {
   const dir = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
-  if (dir !== 0) player.vx = dir * MOVE_SPEED;
-  else player.vx *= 0.78;
+  const moveScale = joystickState.active ? joystickMoveScale : 1;
+
+  if (dir !== 0) {
+    player.vx = dir * MOVE_SPEED * moveScale;
+  } else {
+    player.vx *= 0.78;
+  }
   player.x += player.vx;
 
   if (player.x + player.w < 0) player.x = CW;
@@ -1632,12 +1622,12 @@ function startGame() {
   startBtn.disabled = true;
   setAIMessage(
     '喂！準備好未？🏃‍♂️<br><br>' +
-    '用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
-    '一路向上爬，收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽！<br><br>' +
+    '用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，中間地帶會停止，越推越遠越快！' +
+    '撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！一路向上爬，收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽！<br><br>' +
     '收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據！<br><br>' +
     '小心紅色危險平台，踩到即 GG 呀！'
   );
-  aiTip.textContent = '💡 搖桿移動 · 跳躍掣空中再跳';
+  aiTip.textContent = '💡 搖桿中間停止 · 越推越快';
   hideMoreButton();
   hapticTap();
 }
@@ -1657,6 +1647,7 @@ function endGame() {
   aiTip.textContent = '💡 撳「再挑機」繼續';
   hideMoreButton();
   keys.left = false; keys.right = false;
+  joystickMoveScale = 1;
   resetJoystickKnob();
 }
 
@@ -1815,7 +1806,7 @@ function drawMenu() {
   ctx.fillStyle = '#6ec8ff'; ctx.font = '600 15px "PingFang HK", sans-serif';
   ctx.fillText('CES 中三專題 · 挑機版', CW / 2, CH / 2 + 4);
   ctx.fillStyle = '#a8c8e0'; ctx.font = '14px "PingFang HK", sans-serif';
-  ctx.fillText('🕹️ 搖桿左右移動，跳躍掣空中再跳', CW / 2, CH / 2 + 62);
+  ctx.fillText('🕹️ 搖桿中間停止，越推越快', CW / 2, CH / 2 + 62);
   ctx.fillText('踩平台自動彈跳，一路向上', CW / 2, CH / 2 + 88);
   ctx.fillText('收集徽章 · 解鎖 AI 經濟知識卡', CW / 2, CH / 2 + 114);
   ctx.fillText('撳「📖 了解更多」睇深入數據', CW / 2, CH / 2 + 140);
@@ -1920,8 +1911,6 @@ document.addEventListener('touchmove', (e) => {
 
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
-
-/* 全頁禁止選取和拖動 */
 document.addEventListener('dragstart', (e) => e.preventDefault());
 document.addEventListener('selectstart', (e) => e.preventDefault());
 
@@ -1936,7 +1925,8 @@ resetBtn.addEventListener('click', () => {
   setAIMessage(
     '喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>' +
     '撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>' +
-    '用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
+    '用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，中間地帶會停止，越推越遠越快！' +
+    '撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
     '收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據 🎓'
   );
   aiTip.textContent = '💡 空白鍵 / 點擊畫面開始';
@@ -1960,6 +1950,7 @@ window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 120)
 requestAnimationFrame(() => {
   resizeCanvas();
   initGame();
+  requestAnimationFrame(resizeCanvas);
   requestAnimationFrame(loop);
 });
 </script>
