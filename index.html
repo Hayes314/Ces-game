@@ -183,7 +183,7 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     background: linear-gradient(180deg, #0d1f2e 0%, #081420 100%);
     border: 1px solid var(--border);
     border-radius: 18px;
@@ -251,81 +251,175 @@
   .ai-msg.updated { animation: msgPop 0.35s ease-out; }
   @keyframes msgPop { 0% { opacity: 0; transform: translateY(8px) scale(0.97); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
+  .ai-msg .detail-header {
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 8px; margin-bottom: 10px;
+    border-bottom: 1px dashed rgba(77, 216, 255, 0.3);
+  }
+  .ai-msg .detail-icon { font-size: 1.2rem; line-height: 1; }
+  .ai-msg .detail-title { font-size: 0.9rem; font-weight: 800; color: var(--gold); letter-spacing: 0.3px; }
+  .ai-msg .detail-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .ai-msg .detail-list li { padding-left: 16px; position: relative; font-size: 0.78rem; line-height: 1.65; color: #b8d4e8; }
+  .ai-msg .detail-list li::before { content: '▸'; position: absolute; left: 0; top: 0; color: var(--cyan); font-weight: 700; }
+  .ai-msg .detail-list li b { color: var(--gold); font-weight: 700; }
+  .ai-msg .detail-list li .stat { color: var(--green); font-weight: 700; background: rgba(125, 255, 176, 0.1); padding: 0 3px; border-radius: 3px; }
+  .ai-msg .detail-footer { margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(77, 216, 255, 0.2); font-size: 0.66rem; color: var(--text-dim); text-align: center; }
+
+  .ai-action-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px;
+    background: linear-gradient(180deg, #1a4159, #0d2a3f);
+    border: 1px solid var(--border-bright);
+    border-radius: 12px;
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.12s ease;
+    box-shadow: 0 2px 0 #07141f, 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    touch-action: manipulation;
+    outline: none;
+  }
+
+  .ai-action-btn.visible { display: flex; }
+  .ai-action-btn:hover { background: linear-gradient(180deg, #235070, #113048); color: #6ec8ff; }
+  .ai-action-btn:active { transform: translateY(2px); box-shadow: 0 0 0 #07141f, 0 2px 6px rgba(0, 0, 0, 0.4); }
+  .ai-action-btn.detail-mode { background: linear-gradient(180deg, #2a4d6b, #163048); color: var(--gold); border-color: #4a7a9c; }
+  .ai-action-btn.detail-mode:hover { background: linear-gradient(180deg, #335d80, #1a3a54); color: #ffe08a; }
+  .ai-action-btn .label-full { display: inline; }
+  .ai-action-btn .label-short { display: none; }
+
   .ai-tip { font-size: 0.66rem; color: var(--text-dim); text-align: right; min-height: 14px; flex-shrink: 0; }
 
+  /* ============================================================
+     底部控制栏：左摇杆 + 右跳跃
+     ============================================================ */
   .controls-row {
     flex: 0 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    padding: 10px 18px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
     background: linear-gradient(180deg, rgba(15, 34, 50, 0.98), rgba(7, 17, 27, 0.98));
     border: 1px solid var(--border);
     border-radius: 20px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5);
   }
 
-  .move-group {
-    display: flex;
-    gap: 14px;
-    flex: 0 0 auto;
-  }
-
-  .pad-btn {
+  /* ===== 虚拟摇杆 ===== */
+  .joystick-zone {
     position: relative;
-    width: 84px;
-    height: 76px;
-    border-radius: 20px;
-    background: linear-gradient(180deg, #1a4159 0%, #0d2a3f 100%);
-    border: 2px solid var(--border-bright);
-    color: var(--text);
-    cursor: pointer;
+    flex-shrink: 0;
+    width: 140px;
+    height: 140px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    transition: transform 0.08s, box-shadow 0.08s, background 0.1s;
-    box-shadow: 0 5px 0 #07141f, 0 7px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    touch-action: none;
     user-select: none;
     -webkit-user-select: none;
-    font-family: inherit;
-    touch-action: none;
-    flex-shrink: 0;
     -webkit-touch-callout: none;
     outline: none;
   }
 
-  .pad-btn:hover { background: linear-gradient(180deg, #235070, #113048); }
-
-  .pad-btn:active,
-  .pad-btn.pressed {
-    transform: translateY(5px);
-    box-shadow: 0 0 0 #07141f, 0 2px 6px rgba(0, 0, 0, 0.5);
-    background: linear-gradient(180deg, #2a6a8f, #17425f);
+  .joystick-base {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 35%, #1a4159 0%, #0a1a28 80%);
+    border: 2px solid var(--border-bright);
+    box-shadow:
+      inset 0 3px 12px rgba(0, 0, 0, 0.7),
+      inset 0 -2px 8px rgba(77, 216, 255, 0.08),
+      0 4px 14px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
-  .pad-arrow {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: var(--cyan);
-    text-shadow: 0 0 10px rgba(77, 216, 255, 0.7);
-    line-height: 1;
+  .joystick-base::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    background:
+      linear-gradient(90deg, transparent calc(50% - 1px), rgba(77, 216, 255, 0.13) 50%, transparent calc(50% + 1px)),
+      linear-gradient(0deg, transparent calc(50% - 1px), rgba(77, 216, 255, 0.13) 50%, transparent calc(50% + 1px));
+    pointer-events: none;
   }
 
-  .pad-sub {
-    font-size: 0.66rem;
-    color: var(--text-dim);
-    font-weight: 600;
-    letter-spacing: 1.5px;
+  .joystick-base::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 1px dashed rgba(77, 216, 255, 0.15);
+    pointer-events: none;
   }
 
+  .joystick-zone.active .joystick-base {
+    border-color: var(--cyan);
+    box-shadow:
+      inset 0 3px 12px rgba(0, 0, 0, 0.7),
+      inset 0 -2px 8px rgba(77, 216, 255, 0.15),
+      0 0 24px rgba(77, 216, 255, 0.45),
+      0 4px 14px rgba(0, 0, 0, 0.5);
+  }
+
+  .joystick-knob {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 30%, #6ee6ff 0%, #2b9fd0 50%, #1a7aa8 100%);
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+      0 3px 10px rgba(0, 0, 0, 0.55),
+      inset 0 2px 4px rgba(255, 255, 255, 0.55),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+    transform: translate(0, 0);
+    transition: transform 0.08s ease-out, box-shadow 0.15s;
+    pointer-events: none;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .joystick-knob::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  }
+
+  .joystick-zone.active .joystick-knob {
+    transition: box-shadow 0.15s;
+    box-shadow:
+      0 4px 14px rgba(0, 0, 0, 0.6),
+      0 0 18px rgba(77, 216, 255, 0.75),
+      inset 0 2px 4px rgba(255, 255, 255, 0.6),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ===== 跳跃按钮 ===== */
   .jump-btn {
-    flex: 1 1 auto;
-    min-width: 140px;
-    max-width: 280px;
+    flex: 0 1 auto;
+    width: 200px;
+    min-width: 130px;
+    max-width: 240px;
     height: 76px;
     border-radius: 20px;
     background: linear-gradient(180deg, #ffc04d 0%, #d69030 100%);
@@ -369,33 +463,43 @@
     background: linear-gradient(180deg, #d69030 0%, #b07420 100%);
   }
 
-  .jump-arrow {
-    font-size: 1.8rem;
-    line-height: 1;
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
-  }
-
+  .jump-arrow { font-size: 1.8rem; line-height: 1; filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6)); }
   .jump-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; }
   .jump-hint { font-size: 0.68rem; opacity: 0.9; letter-spacing: 0.5px; }
+
+  /* ============================================================
+     响应式断点
+     ============================================================ */
 
   @media (max-width: 1400px) { .ai-panel { flex: 0 0 320px; } }
 
   @media (max-width: 1200px) {
     .ai-panel { flex: 0 0 290px; }
     .ai-msg { font-size: 0.79rem; padding: 11px; }
+    .joystick-zone { width: 130px; height: 130px; }
+    .joystick-base { width: 112px; height: 112px; }
+    .joystick-knob { width: 44px; height: 44px; }
+    .jump-btn { width: 180px; height: 72px; }
   }
 
   @media (max-width: 1000px) {
-    .ai-panel { flex: 0 0 260px; padding: 11px; gap: 8px; }
+    .ai-panel { flex: 0 0 260px; padding: 11px; gap: 7px; }
     .ai-msg { font-size: 0.75rem; padding: 10px; line-height: 1.62; }
     .ai-head-text h3 { font-size: 0.83rem; }
     .ai-head-text p { font-size: 0.56rem; }
     .ai-avatar { width: 34px; height: 34px; font-size: 1.1rem; }
     .ai-tip { font-size: 0.6rem; }
+    .ai-action-btn { font-size: 0.72rem; padding: 8px 12px; }
+    .ai-msg .detail-title { font-size: 0.84rem; }
+    .ai-msg .detail-list li { font-size: 0.72rem; }
+    .joystick-zone { width: 120px; height: 120px; }
+    .joystick-base { width: 104px; height: 104px; }
+    .joystick-knob { width: 42px; height: 42px; }
+    .jump-btn { width: 160px; height: 68px; }
   }
 
   @media (max-width: 820px) {
-    .ai-panel { flex: 0 0 230px; padding: 10px; gap: 7px; border-radius: 14px; }
+    .ai-panel { flex: 0 0 230px; padding: 10px; gap: 6px; border-radius: 14px; }
     .ai-msg { font-size: 0.72rem; padding: 9px; line-height: 1.58; border-left-width: 2px; }
     .ai-head { padding-bottom: 8px; gap: 8px; }
     .ai-avatar { width: 30px; height: 30px; font-size: 0.95rem; }
@@ -403,16 +507,29 @@
     .ai-head-text h3 { font-size: 0.78rem; }
     .ai-head-text p { display: none; }
     .ai-tip { display: none; }
+    .ai-action-btn { font-size: 0.68rem; padding: 7px 10px; border-radius: 10px; }
+    .ai-msg .detail-icon { font-size: 1rem; }
+    .ai-msg .detail-title { font-size: 0.78rem; }
+    .ai-msg .detail-list { gap: 6px; }
+    .ai-msg .detail-list li { font-size: 0.68rem; line-height: 1.55; padding-left: 13px; }
+    .ai-msg .detail-footer { font-size: 0.6rem; margin-top: 8px; padding-top: 6px; }
   }
 
   @media (max-width: 700px) {
-    .ai-panel { flex: 0 0 205px; padding: 9px; gap: 6px; border-radius: 12px; }
+    .ai-panel { flex: 0 0 205px; padding: 9px; gap: 5px; border-radius: 12px; }
     .ai-msg { font-size: 0.68rem; padding: 8px; line-height: 1.55; }
     .ai-avatar { width: 26px; height: 26px; font-size: 0.82rem; }
     .ai-avatar::after { width: 7px; height: 7px; border-width: 1.5px; }
     .ai-head-text h3 { font-size: 0.72rem; }
+    .ai-action-btn { font-size: 0.62rem; padding: 6px 8px; border-radius: 8px; }
+    .ai-msg .detail-title { font-size: 0.72rem; }
+    .ai-msg .detail-list li { font-size: 0.62rem; line-height: 1.5; }
+    .ai-msg .detail-header { margin-bottom: 7px; padding-bottom: 6px; gap: 5px; }
   }
 
+  /* ============================================================
+     手机竖屏（≤820px，portrait）
+     ============================================================ */
   @media (max-width: 820px) and (orientation: portrait) {
     .app { padding: 7px; gap: 7px; padding-bottom: calc(7px + env(safe-area-inset-bottom)); }
 
@@ -433,44 +550,48 @@
     .canvas-wrap::after { border-radius: 14px; inset: 2px; }
     .canvas-wrap canvas { border-radius: 14px; }
 
-    .ai-panel { flex: 0 0 180px; padding: 8px; gap: 6px; border-radius: 12px; }
+    .ai-panel { flex: 0 0 180px; padding: 8px; gap: 5px; border-radius: 12px; }
     .ai-head { padding-bottom: 6px; gap: 6px; }
     .ai-avatar { width: 24px; height: 24px; font-size: 0.78rem; }
     .ai-avatar::after { width: 7px; height: 7px; border-width: 1.5px; }
     .ai-head-text { display: none; }
     .ai-msg { font-size: 0.66rem; padding: 7px; line-height: 1.5; border-left-width: 2px; border-radius: 4px 10px 10px 10px; }
+    .ai-action-btn { font-size: 0.62rem; padding: 6px 8px; border-radius: 8px; }
+    .ai-msg .detail-title { font-size: 0.72rem; }
+    .ai-msg .detail-list li { font-size: 0.62rem; line-height: 1.5; padding-left: 12px; }
+    .ai-msg .detail-footer { font-size: 0.58rem; }
 
+    /* ★ 手机竖屏摇杆 ★ */
     .controls-row {
-      padding: 12px 14px;
-      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      padding: 8px 14px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
       gap: 12px;
-      border-radius: 20px;
+      border-radius: 18px;
     }
 
-    .move-group { gap: 12px; }
-
-    .pad-btn {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
-      gap: 2px;
-      box-shadow: 0 5px 0 #07141f, 0 7px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    .joystick-zone {
+      width: 120px;
+      height: 120px;
     }
 
-    .pad-btn:active, .pad-btn.pressed {
-      transform: translateY(5px);
-      box-shadow: 0 0 0 #07141f, 0 2px 6px rgba(0, 0, 0, 0.5);
+    .joystick-base {
+      width: 104px;
+      height: 104px;
     }
 
-    .pad-arrow { font-size: 1.55rem; }
-    .pad-sub { font-size: 0.58rem; letter-spacing: 1px; }
+    .joystick-knob {
+      width: 44px;
+      height: 44px;
+    }
+
+    .joystick-base::before { inset: 8px; }
+    .joystick-base::after { inset: 3px; }
 
     .jump-btn {
-      flex: 0 0 auto;
-      width: 120px;
-      min-width: 120px;
-      max-width: 120px;
-      height: 72px;
+      width: 150px;
+      min-width: 140px;
+      max-width: 160px;
+      height: 76px;
       border-radius: 20px;
       gap: 8px;
       box-shadow: 0 5px 0 #8a5a10, 0 7px 20px rgba(201, 136, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
@@ -486,6 +607,9 @@
     .jump-hint { display: none; }
   }
 
+  /* ============================================================
+     小手机竖屏（≤520px）
+     ============================================================ */
   @media (max-width: 520px) and (orientation: portrait) {
     .app { padding: 5px; gap: 5px; padding-bottom: calc(5px + env(safe-area-inset-bottom)); }
     .topbar { padding: 5px 8px; gap: 6px; border-radius: 10px; }
@@ -504,7 +628,7 @@
     .canvas-wrap::after { border-radius: 10px; inset: 2px; }
     .canvas-wrap canvas { border-radius: 10px; }
 
-    .ai-panel { flex: 0 0 128px; padding: 6px; gap: 5px; border-radius: 10px; }
+    .ai-panel { flex: 0 0 128px; padding: 6px; gap: 4px; border-radius: 10px; }
     .ai-head { padding-bottom: 5px; gap: 5px; border-bottom-width: 1px; }
     .ai-avatar { width: 22px; height: 22px; font-size: 0.72rem; }
     .ai-avatar::after { width: 6px; height: 6px; border-width: 1.2px; bottom: 0; right: 0; }
@@ -518,34 +642,48 @@
     }
     .ai-msg .stat { padding: 0 2px; }
     .ai-tip { display: none; }
+    .ai-action-btn { font-size: 0.58rem; padding: 5px 7px; border-radius: 7px; gap: 3px; }
+    .ai-action-btn .label-full { display: none; }
+    .ai-action-btn .label-short { display: inline; }
+    .ai-msg .detail-icon { font-size: 0.88rem; }
+    .ai-msg .detail-title { font-size: 0.64rem; }
+    .ai-msg .detail-header { margin-bottom: 5px; padding-bottom: 4px; gap: 4px; }
+    .ai-msg .detail-list { gap: 4px; }
+    .ai-msg .detail-list li { font-size: 0.58rem; line-height: 1.45; padding-left: 10px; }
+    .ai-msg .detail-list li::before { font-size: 0.55rem; }
+    .ai-msg .detail-footer { font-size: 0.54rem; margin-top: 6px; padding-top: 4px; }
 
+    /* ★ 小手机竖屏摇杆 ★ */
     .controls-row {
-      padding: 10px 12px;
-      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      padding: 6px 12px;
+      padding-bottom: calc(6px + env(safe-area-inset-bottom));
       gap: 10px;
       border-radius: 16px;
     }
-    .move-group { gap: 10px; }
 
-    .pad-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      gap: 2px;
-      box-shadow: 0 4px 0 #07141f, 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    .joystick-zone {
+      width: 110px;
+      height: 110px;
     }
-    .pad-btn:active, .pad-btn.pressed {
-      transform: translateY(4px);
-      box-shadow: 0 0 0 #07141f, 0 2px 5px rgba(0, 0, 0, 0.5);
+
+    .joystick-base {
+      width: 96px;
+      height: 96px;
     }
-    .pad-arrow { font-size: 1.4rem; }
-    .pad-sub { font-size: 0.54rem; letter-spacing: 0.8px; }
+
+    .joystick-knob {
+      width: 40px;
+      height: 40px;
+    }
+
+    .joystick-base::before { inset: 7px; }
+    .joystick-base::after { inset: 3px; }
 
     .jump-btn {
-      width: 110px;
-      min-width: 110px;
-      max-width: 110px;
-      height: 64px;
+      width: 130px;
+      min-width: 120px;
+      max-width: 140px;
+      height: 68px;
       border-radius: 18px;
       gap: 6px;
       box-shadow: 0 4px 0 #8a5a10, 0 6px 16px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -554,15 +692,21 @@
       transform: translateY(4px);
       box-shadow: 0 0 0 #8a5a10, 0 2px 6px rgba(201, 136, 42, 0.4);
     }
-    .jump-arrow { font-size: 1.4rem; }
-    .jump-text { font-size: 0.92rem; letter-spacing: 1.2px; }
+    .jump-arrow { font-size: 1.35rem; }
+    .jump-text { font-size: 0.9rem; letter-spacing: 1.2px; }
     .jump-hint { display: none; }
   }
 
+  /* ============================================================
+     超小屏（≤400px，portrait）
+     ============================================================ */
   @media (max-width: 400px) and (orientation: portrait) {
     .ai-panel { flex: 0 0 115px; padding: 5px; gap: 4px; }
     .ai-avatar { width: 20px; height: 20px; font-size: 0.66rem; }
     .ai-msg { font-size: 0.58rem; padding: 4px 5px; line-height: 1.45; }
+    .ai-action-btn { font-size: 0.55rem; padding: 4px 6px; }
+    .ai-msg .detail-title { font-size: 0.6rem; }
+    .ai-msg .detail-list li { font-size: 0.54rem; line-height: 1.42; }
     .stat { padding: 2px 5px; min-width: 40px; }
     .stat small { font-size: 0.4rem; }
     .stat b { font-size: 0.7rem; }
@@ -570,33 +714,45 @@
     .brand h1 { font-size: 0.7rem; }
 
     .controls-row {
-      padding: 8px 10px;
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      padding: 5px 10px;
+      padding-bottom: calc(5px + env(safe-area-inset-bottom));
       gap: 8px;
       border-radius: 14px;
     }
-    .move-group { gap: 8px; }
 
-    .pad-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
+    .joystick-zone {
+      width: 100px;
+      height: 100px;
     }
-    .pad-arrow { font-size: 1.3rem; }
-    .pad-sub { font-size: 0.5rem; }
+
+    .joystick-base {
+      width: 88px;
+      height: 88px;
+    }
+
+    .joystick-knob {
+      width: 36px;
+      height: 36px;
+    }
+
+    .joystick-knob::before { width: 9px; height: 9px; }
+    .joystick-base::before { inset: 6px; }
 
     .jump-btn {
-      width: 100px;
-      min-width: 100px;
-      max-width: 100px;
-      height: 60px;
+      width: 118px;
+      min-width: 110px;
+      max-width: 126px;
+      height: 62px;
       border-radius: 16px;
       gap: 5px;
     }
-    .jump-arrow { font-size: 1.3rem; }
-    .jump-text { font-size: 0.85rem; }
+    .jump-arrow { font-size: 1.25rem; }
+    .jump-text { font-size: 0.82rem; }
   }
 
+  /* ============================================================
+     手机横屏（高度≤560px）
+     ============================================================ */
   @media (orientation: landscape) and (max-height: 560px) {
     .app {
       padding: 6px;
@@ -620,7 +776,7 @@
     .canvas-wrap::after { border-radius: 10px; inset: 2px; }
     .canvas-wrap canvas { border-radius: 10px; }
 
-    .ai-panel { flex: 0 0 210px; padding: 8px; gap: 6px; border-radius: 12px; }
+    .ai-panel { flex: 0 0 210px; padding: 8px; gap: 5px; border-radius: 12px; }
     .ai-head { padding-bottom: 6px; gap: 6px; }
     .ai-avatar { width: 28px; height: 28px; font-size: 0.85rem; }
     .ai-avatar::after { width: 7px; height: 7px; border-width: 1.5px; }
@@ -628,35 +784,43 @@
     .ai-head-text p { display: none; }
     .ai-msg { font-size: 0.67rem; padding: 7px 8px; line-height: 1.5; border-left-width: 2px; border-radius: 4px 10px 10px 10px; }
     .ai-tip { font-size: 0.56rem; }
+    .ai-action-btn { font-size: 0.64rem; padding: 6px 9px; border-radius: 8px; }
+    .ai-msg .detail-title { font-size: 0.72rem; }
+    .ai-msg .detail-list li { font-size: 0.63rem; line-height: 1.5; padding-left: 12px; }
+    .ai-msg .detail-footer { font-size: 0.56rem; }
 
+    /* ★ 手机横屏摇杆：更紧凑 ★ */
     .controls-row {
-      padding: 8px 14px;
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      padding: 5px 14px;
+      padding-bottom: calc(5px + env(safe-area-inset-bottom));
       gap: 12px;
       border-radius: 14px;
     }
-    .move-group { gap: 10px; }
 
-    .pad-btn {
-      width: 72px;
-      height: 60px;
-      border-radius: 16px;
-      gap: 2px;
-      box-shadow: 0 4px 0 #07141f, 0 5px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    .joystick-zone {
+      width: 100px;
+      height: 100px;
     }
-    .pad-btn:active, .pad-btn.pressed {
-      transform: translateY(4px);
-      box-shadow: 0 0 0 #07141f, 0 2px 5px rgba(0, 0, 0, 0.5);
+
+    .joystick-base {
+      width: 88px;
+      height: 88px;
     }
-    .pad-arrow { font-size: 1.35rem; }
-    .pad-sub { font-size: 0.54rem; letter-spacing: 0.8px; }
+
+    .joystick-knob {
+      width: 38px;
+      height: 38px;
+    }
+
+    .joystick-knob::before { width: 9px; height: 9px; }
+    .joystick-base::before { inset: 6px; }
+    .joystick-base::after { inset: 2px; }
 
     .jump-btn {
-      flex: 0 0 auto;
-      width: 120px;
+      width: 140px;
       min-width: 120px;
-      max-width: 120px;
-      height: 60px;
+      max-width: 160px;
+      height: 62px;
       border-radius: 16px;
       gap: 8px;
       box-shadow: 0 4px 0 #8a5a10, 0 5px 16px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -670,6 +834,9 @@
     .jump-hint { display: none; }
   }
 
+  /* ============================================================
+     极矮横屏（高度≤420px）
+     ============================================================ */
   @media (orientation: landscape) and (max-height: 420px) {
     .app { padding: 4px; gap: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); }
     .topbar { padding: 2px 7px; }
@@ -682,15 +849,27 @@
 
     .ai-panel { flex: 0 0 190px; padding: 6px; gap: 4px; }
     .ai-msg { font-size: 0.62rem; padding: 5px 6px; line-height: 1.48; }
+    .ai-action-btn { font-size: 0.58rem; padding: 5px 7px; }
+    .ai-msg .detail-title { font-size: 0.65rem; }
+    .ai-msg .detail-list li { font-size: 0.57rem; line-height: 1.42; }
 
-    .controls-row { padding: 6px 12px; padding-bottom: calc(6px + env(safe-area-inset-bottom)); gap: 10px; }
-    .move-group { gap: 8px; }
+    .controls-row { padding: 4px 12px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); gap: 10px; }
 
-    .pad-btn { width: 62px; height: 54px; border-radius: 14px; }
-    .pad-arrow { font-size: 1.2rem; }
-    .pad-sub { font-size: 0.5rem; }
+    .joystick-zone { width: 88px; height: 88px; }
+    .joystick-base { width: 76px; height: 76px; }
+    .joystick-knob { width: 34px; height: 34px; }
+    .joystick-knob::before { width: 8px; height: 8px; }
+    .joystick-base::before { inset: 5px; }
+    .joystick-base::after { inset: 2px; }
 
-    .jump-btn { width: 110px; min-width: 110px; max-width: 110px; height: 54px; border-radius: 14px; gap: 6px; }
+    .jump-btn {
+      width: 130px;
+      min-width: 110px;
+      max-width: 150px;
+      height: 56px;
+      border-radius: 14px;
+      gap: 6px;
+    }
     .jump-arrow { font-size: 1.2rem; }
     .jump-text { font-size: 0.85rem; }
   }
@@ -735,24 +914,31 @@
       <div class="ai-msg" id="aiMessage">
         喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>
         撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>
-        用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>
-        收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽 🎓
+        用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>
+        收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據 🎓
       </div>
+      <button class="ai-action-btn" id="aiMoreBtn" aria-label="了解更多">
+        <span class="state-summary">
+          <span class="label-full">📖 了解更多</span>
+          <span class="label-short">📖 更多</span>
+        </span>
+        <span class="state-detail" style="display:none;">
+          <span class="label-full">← 返回摘要</span>
+          <span class="label-short">← 返回</span>
+        </span>
+      </button>
       <div class="ai-tip" id="aiTip">💡 空白鍵 / 點擊畫面開始</div>
     </aside>
   </div>
 
+  <!-- ===== 底部：左摇杆 + 右跳跃 ===== -->
   <div class="controls-row">
-    <div class="move-group">
-      <button class="pad-btn" id="btnLeft" aria-label="向左移動">
-        <span class="pad-arrow">◀</span>
-        <span class="pad-sub">左移</span>
-      </button>
-      <button class="pad-btn" id="btnRight" aria-label="向右移動">
-        <span class="pad-arrow">▶</span>
-        <span class="pad-sub">右移</span>
-      </button>
+    <div class="joystick-zone" id="joystickZone" aria-label="移動搖桿">
+      <div class="joystick-base" id="joystickBase">
+        <div class="joystick-knob" id="joystickKnob"></div>
+      </div>
     </div>
+
     <button class="jump-btn" id="btnJump" aria-label="跳躍">
       <span class="jump-arrow">⬆</span>
       <span class="jump-text">跳躍</span>
@@ -764,14 +950,14 @@
 <script>
 /* ============================================================
    香港經濟貢獻 · 無限爬升
-   画布自由拉伸 · 角色/文字等比不变形 · AI 常驻右侧
+   摇杆版 · 「了解更多」詳細資料
    ============================================================ */
 
 /* ---------- 逻辑尺寸 ---------- */
-const LOGICAL_H = 720;         // 逻辑高度固定
-let CW = 480;                  // 逻辑宽度动态（由屏幕比例决定）
+const LOGICAL_H = 720;
+let CW = 480;
 const CH = LOGICAL_H;
-const BASE_Y = 560;            // 地面逻辑 Y
+const BASE_Y = 560;
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -779,14 +965,19 @@ const ctx = canvas.getContext('2d');
 /* ---------- DOM ---------- */
 const aiMessage = document.getElementById('aiMessage');
 const aiTip = document.getElementById('aiTip');
+const aiMoreBtn = document.getElementById('aiMoreBtn');
+const aiMoreBtnSummary = aiMoreBtn.querySelector('.state-summary');
+const aiMoreBtnDetail = aiMoreBtn.querySelector('.state-detail');
 const altitudeDisplay = document.getElementById('altitudeDisplay');
 const badgeDisplay = document.getElementById('badgeDisplay');
 const scoreDisplay = document.getElementById('scoreDisplay');
 const startBtn = document.getElementById('startBtn');
 const resetBtn = document.getElementById('resetBtn');
-const btnLeft = document.getElementById('btnLeft');
-const btnRight = document.getElementById('btnRight');
 const btnJump = document.getElementById('btnJump');
+
+const joystickZone = document.getElementById('joystickZone');
+const joystickBase = document.getElementById('joystickBase');
+const joystickKnob = document.getElementById('joystickKnob');
 
 /* ---------- 物理常數 ---------- */
 const GRAVITY = 0.62;
@@ -812,6 +1003,11 @@ let particles = [];
 let milestonesHit = new Set();
 let typesCollected = new Set();
 
+/* 「了解更多」狀態 */
+let currentBadgeType = null;
+let currentSummaryHtml = '';
+let showingDetail = false;
+
 const keys = { left: false, right: false };
 
 const player = {
@@ -822,7 +1018,6 @@ const player = {
   canDoubleJump: true
 };
 
-/* ---------- 震動反饋 ---------- */
 const supportsVibrate = typeof navigator !== 'undefined' && 'vibrate' in navigator;
 function hapticTap() {
   if (!supportsVibrate) return;
@@ -830,7 +1025,112 @@ function hapticTap() {
 }
 
 /* ============================================================
-   画布尺寸自适应（核心：等比缩放，角色/文字不变形）
+   摇杆逻辑
+   ============================================================ */
+const joystickState = {
+  active: false,
+  pointerId: null,
+  centerX: 0,
+  centerY: 0,
+  maxRadius: 40,
+  deadzone: 0.18
+};
+
+function refreshJoystickMetrics() {
+  const zoneRect = joystickZone.getBoundingClientRect();
+  const baseRect = joystickBase.getBoundingClientRect();
+  joystickState.centerX = zoneRect.left + zoneRect.width / 2;
+  joystickState.centerY = zoneRect.top + zoneRect.height / 2;
+  joystickState.maxRadius = (baseRect.width / 2) * 0.72;
+}
+
+function setJoystickKnob(dx, dy) {
+  joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+}
+
+function resetJoystickKnob() {
+  setJoystickKnob(0, 0);
+  joystickZone.classList.remove('active');
+}
+
+function handleJoystickInput(clientX, clientY) {
+  let dx = clientX - joystickState.centerX;
+  let dy = clientY - joystickState.centerY;
+  const dist = Math.hypot(dx, dy);
+  const maxR = joystickState.maxRadius;
+
+  if (dist > maxR) {
+    dx = (dx / dist) * maxR;
+    dy = (dy / dist) * maxR;
+  }
+
+  setJoystickKnob(dx, dy);
+
+  const nx = dx / maxR;
+  if (nx < -joystickState.deadzone) {
+    keys.left = true;
+    keys.right = false;
+  } else if (nx > joystickState.deadzone) {
+    keys.right = true;
+    keys.left = false;
+  } else {
+    keys.left = false;
+    keys.right = false;
+  }
+}
+
+joystickZone.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  if (joystickState.active) return;
+
+  refreshJoystickMetrics();
+  joystickState.active = true;
+  joystickState.pointerId = e.pointerId;
+  joystickZone.classList.add('active');
+
+  try { joystickZone.setPointerCapture(e.pointerId); } catch(err) {}
+
+  handleJoystickInput(e.clientX, e.clientY);
+  hapticTap();
+});
+
+joystickZone.addEventListener('pointermove', (e) => {
+  if (!joystickState.active || e.pointerId !== joystickState.pointerId) return;
+  e.preventDefault();
+  handleJoystickInput(e.clientX, e.clientY);
+});
+
+function releaseJoystick(e) {
+  if (!joystickState.active) return;
+  if (e && e.pointerId !== undefined && e.pointerId !== joystickState.pointerId) return;
+
+  joystickState.active = false;
+  joystickState.pointerId = null;
+  keys.left = false;
+  keys.right = false;
+  resetJoystickKnob();
+}
+
+joystickZone.addEventListener('pointerup', releaseJoystick);
+joystickZone.addEventListener('pointercancel', releaseJoystick);
+joystickZone.addEventListener('lostpointercapture', releaseJoystick);
+joystickZone.addEventListener('contextmenu', e => e.preventDefault());
+
+/* 键盘操作时，摇杆帽也同步显示方向 */
+function updateJoystickVisualFromKeys() {
+  if (joystickState.active) return;
+  let dx = 0;
+  if (keys.left) dx = -joystickState.maxRadius * 0.72;
+  else if (keys.right) dx = joystickState.maxRadius * 0.72;
+
+  setJoystickKnob(dx, 0);
+
+  if (keys.left || keys.right) joystickZone.classList.add('active');
+  else joystickZone.classList.remove('active');
+}
+
+/* ============================================================
+   画布尺寸自适应
    ============================================================ */
 function resizeCanvas() {
   const displayW = canvas.clientWidth;
@@ -841,14 +1141,11 @@ function resizeCanvas() {
   canvas.width = displayW * dpr;
   canvas.height = displayH * dpr;
 
-  // 逻辑高度固定 720，按显示高度计算缩放比例
   const scale = displayH / LOGICAL_H;
   ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
 
-  // 逻辑宽度 = 720 * (显示宽 / 显示高)
   CW = LOGICAL_H * (displayW / displayH);
 
-  // 调整玩家/平台范围
   if (player) {
     if (player.x + player.w > CW) player.x = Math.max(0, CW - player.w);
     if (player.x < 0) player.x = 0;
@@ -856,7 +1153,8 @@ function resizeCanvas() {
   platforms = platforms.filter(p => p.x < CW);
   badges = badges.filter(b => b.x < CW);
 
-  // 立即重绘
+  refreshJoystickMetrics();
+
   draw();
 }
 
@@ -873,7 +1171,7 @@ const BADGE_TYPES = [
 ];
 
 /* ============================================================
-   AI 知識庫
+   AI 知識庫（摘要）
    ============================================================ */
 const AI_KNOWLEDGE = {
   finance: [
@@ -905,6 +1203,78 @@ const AI_KNOWLEDGE = {
     '「深圳—香港—廣州」科技集群在《2025 全球創新指數》中首次排名<span class="hl">全球第一</span>。香港初創企業從 2015 年約 <span class="stat">1,500 間</span> 躍升至 2025 年超過 <span class="stat">5,200 間</span>，科學園和數碼港培育了約 <span class="stat">20 家獨角獸</span>。',
     '北部都會區佔香港總面積約 <span class="stat">三分之一</span>，與深圳接壤，係香港深度參與粵港澳大灣區建設、更好融入國家發展大局的重要抓手。新田科技城提供約 <span class="stat">210 公頃</span> 新創科土地，可與大灣區內地城市完整的產業供應鏈結合，承接河套香港園區的科研成果轉化並進行產業化。'
   ]
+};
+
+/* ============================================================
+   深入資料庫
+   ============================================================ */
+const AI_DETAILS = {
+  finance: {
+    icon: '💹',
+    title: '金融樞紐 · 深入數據',
+    points: [
+      '2025 年香港 IPO 市場重奪全球第一，<b>寧德時代</b>來港二次上市集資約 <span class="stat">410 億港元</span>，係全年全球最大 IPO；恆瑞醫藥、海天味業等內地龍頭亦先後登陸港股。',
+      '香港係<b>亞洲最大對沖基金中心</b>、<b>亞洲第二大私募基金中心</b>，超過 1,600 家私募基金在此管理資產。',
+      '跨境財富管理規模達 <span class="stat">2.4 萬億美元</span>，香港已超越瑞士，成為全球最大的跨境財富管理中心。',
+      '香港人民幣存款餘額約 <span class="stat">1.1 萬億元</span>，係全球最大離岸人民幣資金池，為「一帶一路」沿線國家提供人民幣流動性支持。',
+      '「債券通」「互換通」「跨境理財通」等互聯互通機制持續擴容，香港係內地金融市場對外開放的核心試驗田。'
+    ]
+  },
+  trade: {
+    icon: '📦',
+    title: '貿易轉口 · 深入數據',
+    points: [
+      'CEPA 實施超過 20 年，累計為香港貨物節省關稅超過 <span class="stat">100 億元人民幣</span>，服務貿易領域開放措施超過 <span class="stat">150 項</span>。',
+      '香港係內地<b>第四大貿易夥伴</b>，內地係香港<b>第一大貿易夥伴</b>；2025 年兩地貨物貿易總額約 <span class="stat">56,000 億港元</span>，係 2003 年的三倍多。',
+      '香港處理粵港澳大灣區約 <span class="stat">70%</span> 的跨境電商物流，係大灣區產品走向國際市場的重要門戶。',
+      '香港離岸貿易規模持續增長，跨國企業透過香港進行轉口、轉運、離岸採購，享受自由港零關稅與高效清關優勢。',
+      '「一帶一路」倡議下，香港與東盟、中東、中亞市場貿易額快速增長，2025 年東盟已成為香港第二大貿易夥伴。'
+    ]
+  },
+  aviation: {
+    icon: '✈️',
+    title: '航空貨運 · 深入數據',
+    points: [
+      '三跑道系統於 2024 年 11 月全面啟用，目標年客運量 <span class="stat">1.2 億人次</span>、年貨運量 <span class="stat">1,000 萬公噸</span>。',
+      '香港機場貨運總值佔全球航空貨運總值約 <span class="stat">40%</span>，高價值電子產品、醫藥冷鏈、貴重物品經香港高效流轉。',
+      '「機場城市」SKYCITY 計劃投資超過 <span class="stat">1,000 億元</span>，發展零售、餐飲、娛樂、酒店、辦公綜合體，打造世界級機場城市。',
+      '東莞香港國際機場物流園實現「<b>香港清關、內地收貨</b>」，大灣區空運貨物可提前完成安檢、打板，節省約 <span class="stat">三分之一</span> 處理時間。',
+      '香港機場連接全球超過 <span class="stat">220 個航點</span>，係國家高端供應鏈與全球市場之間最高效的空中橋樑。'
+    ]
+  },
+  port: {
+    icon: '🚢',
+    title: '航運港口 · 深入數據',
+    points: [
+      '香港船舶註冊噸位位列<span class="hl">全球第四</span>，超過 <span class="stat">1.3 億總噸</span>，註冊船舶超過 2,400 艘。',
+      '香港提供全球領先的<b>船舶管理、海事保險、海事仲裁、船舶融資</b>等高增值航運服務，波羅的海國際航運公會（BIMCO）已將香港列為四大國際海事仲裁地之一。',
+      '香港港口每年處理超過 <span class="stat">1,300 萬 TEU</span>，葵青貨櫃碼頭以高效著稱，貨櫃船平均停留時間僅約 <span class="stat">1 天</span>，係全球前二十大貨櫃港口平均值的一半。',
+      '香港正發展「<b>智慧港口</b>」，推動港口社區系統、區塊鏈提單、數字化貿易融資，提升整體供應鏈效率。',
+      'LME（倫敦金屬交易所）認可的金屬交割倉已落戶香港，強化國家大宗商品定價話語權與倉儲交割能力。'
+    ]
+  },
+  legal: {
+    icon: '⚖️',
+    title: '專業服務 · 深入數據',
+    points: [
+      '香港國際仲裁中心（HKIAC）2025 年新收案件超過 <span class="stat">500 宗</span>，國際化程度全球領先，仲裁裁決可在超過 <span class="stat">170 個</span> 締約國執行。',
+      '內地與香港相互執行仲裁裁決安排自 1999 年實施，2020 年進一步擴展至內地全部地區，為跨境爭議提供高效解決機制。',
+      '<b>國際調解院總部</b>落戶香港，係全球首個政府間國際調解組織，充分顯示國際社會對香港法律專業的高度認同。',
+      '香港擁有超過 <span class="stat">1.5 萬名</span> 執業律師，其中超過 <span class="stat">1,500 名</span> 為註冊外地律師，來自超過 30 個司法管轄區。',
+      '「香港專業服務出海平台」為內地企業提供法律、會計、稅務、合規、知識產權等一站式專業支援，幫助內地企業用國際聽得明的方式參與全球競爭。'
+    ]
+  },
+  innovation: {
+    icon: '🔬',
+    title: '創科未來 · 深入數據',
+    points: [
+      '<b>InnoHK</b> 已設立 <span class="stat">30 間</span> 研究中心，匯聚全球頂尖科研機構與香港本地大學合作，聚焦人工智能、醫療科技、機器人、金融科技等領域。',
+      '香港研發開支佔 GDP 比例目標提升至 <span class="stat">1.5%</span>，政府持續加大創科投入，並推出「產學研 1+ 計劃」鼓勵科研成果轉化。',
+      '<b>河套深港科技創新合作區</b> 實現「一區兩園」跨境協同，香港園區與深圳園區之間設有便捷跨境通道，科研人員、設備、數據可高效流動。',
+      '香港科技園培育超過 <span class="stat">500 家</span> 初創企業，累計融資超過 <span class="stat">400 億港元</span>；數碼港聚集超過 <span class="stat">2,000 家</span> 初創及科技企業。',
+      '「深圳—香港—廣州」科技集群首次排名<span class="hl">全球第一</span>；新田科技城全面運作後預計每年貢獻香港 GDP 至少 <span class="stat">2,500 億港元</span>，提供超過 <span class="stat">30 萬個</span> 全職崗位。'
+    ]
+  }
 };
 
 const MILESTONES = [
@@ -963,6 +1333,61 @@ function updateHUD() {
 }
 
 /* ============================================================
+   「了解更多」按鈕
+   ============================================================ */
+function showMoreButton() { aiMoreBtn.classList.add('visible'); }
+
+function hideMoreButton() {
+  aiMoreBtn.classList.remove('visible', 'detail-mode');
+  aiMoreBtnSummary.style.display = '';
+  aiMoreBtnDetail.style.display = 'none';
+  currentBadgeType = null;
+  showingDetail = false;
+}
+
+function buildDetailHtml(badgeId) {
+  const d = AI_DETAILS[badgeId];
+  if (!d) return '';
+  let html = `<div class="detail-header"><span class="detail-icon">${d.icon}</span><span class="detail-title">${d.title}</span></div><ul class="detail-list">`;
+  d.points.forEach(p => { html += `<li>${p}</li>`; });
+  html += `</ul><div class="detail-footer">📖 已展開深入數據 · 點擊下方按鈕返回摘要</div>`;
+  return html;
+}
+
+function showBadgeKnowledge(badgeId, summaryHtml) {
+  currentBadgeType = badgeId;
+  currentSummaryHtml = summaryHtml;
+  showingDetail = false;
+  setAIMessage(summaryHtml);
+  aiMoreBtnSummary.style.display = '';
+  aiMoreBtnDetail.style.display = 'none';
+  aiMoreBtn.classList.remove('detail-mode');
+  showMoreButton();
+}
+
+function toggleDetailView() {
+  if (!currentBadgeType) return;
+  showingDetail = !showingDetail;
+  if (showingDetail) {
+    setAIMessage(buildDetailHtml(currentBadgeType));
+    aiMoreBtnSummary.style.display = 'none';
+    aiMoreBtnDetail.style.display = '';
+    aiMoreBtn.classList.add('detail-mode');
+    aiTip.textContent = '📖 深入數據已展開';
+  } else {
+    setAIMessage(currentSummaryHtml);
+    aiMoreBtnSummary.style.display = '';
+    aiMoreBtnDetail.style.display = 'none';
+    aiMoreBtn.classList.remove('detail-mode');
+    aiTip.textContent = '💡 點擊「了解更多」睇深入數據';
+  }
+  hapticTap();
+}
+
+aiMoreBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); });
+aiMoreBtn.addEventListener('click', (e) => { e.preventDefault(); toggleDetailView(); });
+
+/* ============================================================
    初始化
    ============================================================ */
 function initGame() {
@@ -1000,6 +1425,9 @@ function initGame() {
   altitudeDisplay.textContent = '0';
   badgeDisplay.textContent = '0';
   scoreDisplay.textContent = '0';
+
+  hideMoreButton();
+  resetJoystickKnob();
 }
 
 /* ============================================================
@@ -1128,7 +1556,11 @@ function update() {
   for (const m of MILESTONES) {
     if (altitude >= m.h && !milestonesHit.has(m.h)) {
       milestonesHit.add(m.h);
-      if (aiCooldown <= 0) { setAIMessage('<span class="hl">🎉 成就解鎖</span><br>' + m.msg); aiCooldown = 200; }
+      if (aiCooldown <= 0) {
+        setAIMessage('<span class="hl">🎉 成就解鎖</span><br>' + m.msg);
+        hideMoreButton();
+        aiCooldown = 200;
+      }
     }
   }
 
@@ -1156,9 +1588,9 @@ function collectBadge(b, index) {
     const comboLine = combo > 1
       ? `<span class="hl">COMBO ×${combo}</span>　+${gain} 分<br><br>`
       : `執到 <b>${b.icon} ${b.label}徽章</b>　+${gain} 分<br><br>`;
-    setAIMessage(comboLine + know);
+    showBadgeKnowledge(b.id, comboLine + know);
     aiCooldown = 170;
-    aiTip.textContent = `💡 已解鎖：${b.label}領域知識卡`;
+    aiTip.textContent = '💡 點擊「了解更多」睇深入數據';
   }
 }
 
@@ -1172,11 +1604,13 @@ function startGame() {
   startBtn.disabled = true;
   setAIMessage(
     '喂！準備好未？🏃‍♂️<br><br>' +
-    '用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
+    '用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
     '一路向上爬，收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽！<br><br>' +
+    '收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據！<br><br>' +
     '小心紅色危險平台，踩到即 GG 呀！'
   );
-  aiTip.textContent = '💡 ◀ ▶ 移動 · 跳躍掣空中再跳';
+  aiTip.textContent = '💡 搖桿移動 · 跳躍掣空中再跳';
+  hideMoreButton();
   hapticTap();
 }
 
@@ -1193,10 +1627,13 @@ function endGame() {
     `再嚟挑戰，集齊全套知識卡！💪`
   );
   aiTip.textContent = '💡 撳「再挑機」繼續';
+  hideMoreButton();
+  keys.left = false; keys.right = false;
+  resetJoystickKnob();
 }
 
 /* ============================================================
-   繪製（全部使用逻辑坐标，等比缩放）
+   繪製
    ============================================================ */
 function drawBackground() {
   const g = ctx.createLinearGradient(0, 0, 0, CH);
@@ -1350,10 +1787,10 @@ function drawMenu() {
   ctx.fillStyle = '#6ec8ff'; ctx.font = '600 15px "PingFang HK", sans-serif';
   ctx.fillText('CES 中三專題 · 挑機版', CW / 2, CH / 2 + 4);
   ctx.fillStyle = '#a8c8e0'; ctx.font = '14px "PingFang HK", sans-serif';
-  ctx.fillText('◀ ▶ 掣左右移動，跳躍掣空中再跳', CW / 2, CH / 2 + 62);
+  ctx.fillText('🕹️ 搖桿左右移動，跳躍掣空中再跳', CW / 2, CH / 2 + 62);
   ctx.fillText('踩平台自動彈跳，一路向上', CW / 2, CH / 2 + 88);
   ctx.fillText('收集徽章 · 解鎖 AI 經濟知識卡', CW / 2, CH / 2 + 114);
-  ctx.fillText('小心紅色危險平台 ✖', CW / 2, CH / 2 + 140);
+  ctx.fillText('撳「📖 了解更多」睇深入數據', CW / 2, CH / 2 + 140);
   const alpha = 0.5 + Math.sin(frame * 0.08) * 0.45;
   ctx.globalAlpha = alpha; ctx.fillStyle = '#ffd966';
   ctx.font = 'bold 19px "PingFang HK", sans-serif';
@@ -1408,30 +1845,8 @@ function loop(ts) {
 }
 
 /* ============================================================
-   輸入
+   跳跃按钮 + 键盘输入
    ============================================================ */
-function bindMoveButton(btn, key) {
-  btn.addEventListener('pointerdown', (e) => {
-    e.preventDefault();
-    keys[key] = true;
-    btn.classList.add('pressed');
-    hapticTap();
-  });
-  const release = (e) => {
-    if (e) e.preventDefault();
-    keys[key] = false;
-    btn.classList.remove('pressed');
-  };
-  btn.addEventListener('pointerup', release);
-  btn.addEventListener('pointerleave', release);
-  btn.addEventListener('pointercancel', release);
-  btn.addEventListener('lostpointercapture', release);
-  btn.addEventListener('contextmenu', e => e.preventDefault());
-}
-
-bindMoveButton(btnLeft, 'left');
-bindMoveButton(btnRight, 'right');
-
 btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); doJump(); });
 btnJump.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -1443,14 +1858,32 @@ canvas.addEventListener('pointerdown', (e) => {
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 window.addEventListener('keydown', (e) => {
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.left = true; btnLeft.classList.add('pressed'); e.preventDefault(); }
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.right = true; btnRight.classList.add('pressed'); e.preventDefault(); }
-  if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); if (e.repeat) return; doJump(); }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+    keys.left = true;
+    updateJoystickVisualFromKeys();
+    e.preventDefault();
+  }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+    keys.right = true;
+    updateJoystickVisualFromKeys();
+    e.preventDefault();
+  }
+  if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+    e.preventDefault();
+    if (e.repeat) return;
+    doJump();
+  }
 });
 
 window.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.left = false; btnLeft.classList.remove('pressed'); }
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.right = false; btnRight.classList.remove('pressed'); }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+    keys.left = false;
+    if (!joystickState.active) updateJoystickVisualFromKeys();
+  }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+    keys.right = false;
+    if (!joystickState.active) updateJoystickVisualFromKeys();
+  }
 });
 
 document.addEventListener('touchmove', (e) => {
@@ -1471,10 +1904,11 @@ resetBtn.addEventListener('click', () => {
   setAIMessage(
     '喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>' +
     '撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>' +
-    '用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
-    '收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽 🎓'
+    '用左下角 <span class="hl">🕹️ 搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
+    '收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據 🎓'
   );
   aiTip.textContent = '💡 空白鍵 / 點擊畫面開始';
+  hideMoreButton();
 });
 
 /* ============================================================
@@ -1491,7 +1925,6 @@ function onResize() {
 window.addEventListener('resize', onResize);
 window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 120));
 
-/* 啟動：先確定畫布尺寸，再初始化遊戲 */
 requestAnimationFrame(() => {
   resizeCanvas();
   initGame();
