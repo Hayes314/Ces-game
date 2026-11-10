@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050b14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>香港經濟貢獻 · 無限爬升 | CES中三專題</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --cyan: #4dd8ff;
+    --gold: #ffd966;
+    --green: #7dffb0;
+    --danger: #ef4444;
+    --border: #1e4d6b;
+    --border-bright: #2f6b8f;
+    --text: #e0f0ff;
+    --text-dim: #7a9db5;
+    --font: 'PingFang HK', 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+  }
+
+  html, body {
+    height: 100%;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    background: radial-gradient(ellipse at 20% 0%, #0e2336 0%, #050b14 70%);
+    font-family: var(--font);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+  }
+
+  .app {
+    width: 100%;
+    height: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    background: linear-gradient(180deg, rgba(15, 34, 50, 0.95), rgba(7, 17, 27, 0.95));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 16px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex-shrink: 1; }
+
+  .brand-badge {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, #ffd966, #e6a33a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem; flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(255, 217, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .brand h1 {
+    font-size: 1.05rem; font-weight: 800; letter-spacing: 0.3px;
+    background: linear-gradient(90deg, #ffd966 0%, #6ec8ff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .brand h1 span { font-size: 0.72rem; font-weight: 600; opacity: 0.9; }
+
+  .stats { display: flex; gap: 6px; flex: 0 0 auto; }
+
+  .stat {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 4px 12px; background: linear-gradient(180deg, #112b3f, #0a1a28);
+    border: 1px solid var(--border-bright); border-radius: 10px;
+    min-width: 66px; line-height: 1;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .stat small { font-size: 0.55rem; color: var(--text-dim); letter-spacing: 0.8px; font-weight: 600; margin-bottom: 3px; white-space: nowrap; }
+  .stat b { font-size: 0.98rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .stat b.gold { color: var(--gold); text-shadow: 0 0 10px rgba(255, 217, 102, 0.5); }
+  .stat b.green { color: var(--green); text-shadow: 0 0 10px rgba(125, 255, 176, 0.5); }
+  .stat b.cyan { color: var(--cyan); text-shadow: 0 0 10px rgba(77, 216, 255, 0.5); }
+
+  .stat b.bump { animation: statBump 0.25s ease-out; }
+  @keyframes statBump { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+  .top-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .action-btn {
+    background: linear-gradient(180deg, #1a4159 0%, #0d2a3f 100%);
+    border: 1px solid var(--border-bright); border-radius: 24px;
+    padding: 8px 16px; color: var(--text); font-weight: 700; font-size: 0.82rem;
+    cursor: pointer; transition: all 0.12s ease;
+    box-shadow: 0 3px 0 #07141f, 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-family: inherit; white-space: nowrap; touch-action: manipulation;
+  }
+
+  .action-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #07141f; }
+
+  .action-btn.primary {
+    background: linear-gradient(180deg, #ffc04d 0%, #d69030 100%);
+    border-color: #ffe08a; color: #fff;
+    box-shadow: 0 3px 0 #8a5a10, 0 4px 14px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  }
+
+  .action-btn.primary:active { box-shadow: 0 0 0 #8a5a10; }
+  .action-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  .action-btn.icon-only { padding: 8px 10px; font-size: 0.95rem; }
+
+  .content-row {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .game-col {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    position: relative;
+  }
+
+  .canvas-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 3px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #4dd8ff 0%, #c084fc 50%, #ffd966 100%);
+    box-shadow:
+      0 0 40px rgba(77, 216, 255, 0.35),
+      0 0 80px rgba(192, 132, 252, 0.2),
+      0 14px 40px rgba(0, 0, 0, 0.75);
+    position: relative;
+    display: flex;
+  }
+
+  .canvas-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 17px;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgba(0, 0, 0, 0.06) 2px, rgba(0, 0, 0, 0.06) 3px);
+    mix-blend-mode: overlay;
+  }
+
+  .canvas-wrap canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 17px;
+    touch-action: none;
+    cursor: pointer;
+  }
+
+  .ai-panel {
+    flex: 0 0 340px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: linear-gradient(180deg, #0d1f2e 0%, #081420 100%);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .ai-panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    animation: scanLight 3s linear infinite;
+  }
+
+  @keyframes scanLight { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+  .ai-head {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 10px; border-bottom: 1px solid rgba(30, 77, 107, 0.6); flex-shrink: 0;
+  }
+
+  .ai-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #6ec8ff, #2b78b8);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0; position: relative;
+    animation: avatarBreath 2.5s ease-in-out infinite;
+  }
+
+  @keyframes avatarBreath {
+    0%, 100% { box-shadow: 0 0 10px rgba(110, 200, 255, 0.4); }
+    50% { box-shadow: 0 0 24px rgba(110, 200, 255, 0.9); }
+  }
+
+  .ai-avatar::after {
+    content: ''; position: absolute; bottom: 1px; right: 1px;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--green); border: 2px solid #081420;
+    box-shadow: 0 0 8px var(--green); animation: onlineDot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes onlineDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .ai-head-text h3 { font-size: 0.9rem; color: var(--cyan); font-weight: 700; }
+  .ai-head-text p { font-size: 0.62rem; color: var(--text-dim); margin-top: 2px; }
+
+  .ai-msg {
+    flex: 1 1 auto; min-height: 0;
+    background: rgba(16, 36, 51, 0.9);
+    border-radius: 4px 14px 14px 14px;
+    border-left: 3px solid var(--cyan);
+    padding: 12px; font-size: 0.82rem; line-height: 1.7;
+    color: #c2dcee; overflow-y: auto;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.3);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ai-msg::-webkit-scrollbar { width: 4px; }
+  .ai-msg::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
+  .ai-msg .stat { color: var(--green); font-weight: 700; background: rgba(125, 255, 176, 0.1); padding: 0 4px; border-radius: 3px; white-space: nowrap; }
+  .ai-msg .hl { color: var(--gold); font-weight: 700; }
+
+  .ai-msg.updated { animation: msgPop 0.35s ease-out; }
+  @keyframes msgPop { 0% { opacity: 0; transform: translateY(8px) scale(0.97); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .ai-tip { font-size: 0.66rem; color: var(--text-dim); text-align: right; min-height: 14px; flex-shrink: 0; }
+
+  .controls-row {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgba(15, 34, 50, 0.98), rgba(7, 17, 27, 0.98));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .move-group {
+    display: flex;
+    gap: 14px;
+    flex: 0 0 auto;
+  }
+
+  .pad-btn {
+    position: relative;
+    width: 84px;
+    height: 76px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #1a4159 0%, #0d2a3f 100%);
+    border: 2px solid var(--border-bright);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    transition: transform 0.08s, box-shadow 0.08s, background 0.1s;
+    box-shadow: 0 5px 0 #07141f, 0 7px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: inherit;
+    touch-action: none;
+    flex-shrink: 0;
+    -webkit-touch-callout: none;
+    outline: none;
+  }
+
+  .pad-btn:hover { background: linear-gradient(180deg, #235070, #113048); }
+
+  .pad-btn:active,
+  .pad-btn.pressed {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #07141f, 0 2px 6px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(180deg, #2a6a8f, #17425f);
+  }
+
+  .pad-arrow {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 10px rgba(77, 216, 255, 0.7);
+    line-height: 1;
+  }
+
+  .pad-sub {
+    font-size: 0.66rem;
+    color: var(--text-dim);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+  }
+
+  .jump-btn {
+    flex: 1 1 auto;
+    min-width: 140px;
+    max-width: 280px;
+    height: 76px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffc04d 0%, #d69030 100%);
+    border: 2px solid #ffe08a;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: transform 0.08s, box-shadow 0.08s, background 0.1s;
+    box-shadow: 0 5px 0 #8a5a10, 0 7px 22px rgba(201, 136, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: inherit;
+    touch-action: none;
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    -webkit-touch-callout: none;
+    outline: none;
+  }
+
+  .jump-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.25) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .jump-btn:hover::before { transform: translateX(100%); }
+  .jump-btn:hover { background: linear-gradient(180deg, #ffce6b 0%, #e6a33a 100%); }
+
+  .jump-btn:active,
+  .jump-btn.pressed {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #8a5a10, 0 3px 8px rgba(201, 136, 42, 0.4);
+    background: linear-gradient(180deg, #d69030 0%, #b07420 100%);
+  }
+
+  .jump-arrow {
+    font-size: 1.8rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+  }
+
+  .jump-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; }
+  .jump-hint { font-size: 0.68rem; opacity: 0.9; letter-spacing: 0.5px; }
+
+  @media (max-width: 1400px) { .ai-panel { flex: 0 0 320px; } }
+
+  @media (max-width: 1200px) {
+    .ai-panel { flex: 0 0 290px; }
+    .ai-msg { font-size: 0.79rem; padding: 11px; }
+  }
+
+  @media (max-width: 1000px) {
+    .ai-panel { flex: 0 0 260px; padding: 11px; gap: 8px; }
+    .ai-msg { font-size: 0.75rem; padding: 10px; line-height: 1.62; }
+    .ai-head-text h3 { font-size: 0.83rem; }
+    .ai-head-text p { font-size: 0.56rem; }
+    .ai-avatar { width: 34px; height: 34px; font-size: 1.1rem; }
+    .ai-tip { font-size: 0.6rem; }
+  }
+
+  @media (max-width: 820px) {
+    .ai-panel { flex: 0 0 230px; padding: 10px; gap: 7px; border-radius: 14px; }
+    .ai-msg { font-size: 0.72rem; padding: 9px; line-height: 1.58; border-left-width: 2px; }
+    .ai-head { padding-bottom: 8px; gap: 8px; }
+    .ai-avatar { width: 30px; height: 30px; font-size: 0.95rem; }
+    .ai-avatar::after { width: 8px; height: 8px; border-width: 1.5px; }
+    .ai-head-text h3 { font-size: 0.78rem; }
+    .ai-head-text p { display: none; }
+    .ai-tip { display: none; }
+  }
+
+  @media (max-width: 700px) {
+    .ai-panel { flex: 0 0 205px; padding: 9px; gap: 6px; border-radius: 12px; }
+    .ai-msg { font-size: 0.68rem; padding: 8px; line-height: 1.55; }
+    .ai-avatar { width: 26px; height: 26px; font-size: 0.82rem; }
+    .ai-avatar::after { width: 7px; height: 7px; border-width: 1.5px; }
+    .ai-head-text h3 { font-size: 0.72rem; }
+  }
+
+  @media (max-width: 820px) and (orientation: portrait) {
+    .app { padding: 7px; gap: 7px; padding-bottom: calc(7px + env(safe-area-inset-bottom)); }
+
+    .topbar { padding: 6px 10px; gap: 8px; border-radius: 12px; }
+    .brand-badge { width: 30px; height: 30px; font-size: 0.95rem; border-radius: 8px; }
+    .brand h1 { font-size: 0.88rem; }
+    .brand h1 span { display: none; }
+    .stats { gap: 4px; }
+    .stat { padding: 3px 8px; min-width: 52px; border-radius: 8px; }
+    .stat small { font-size: 0.48rem; margin-bottom: 2px; }
+    .stat b { font-size: 0.82rem; }
+    .top-actions { gap: 4px; }
+    .action-btn { padding: 6px 10px; font-size: 0.7rem; border-radius: 18px; }
+    .action-btn.icon-only { padding: 6px 8px; font-size: 0.85rem; }
+
+    .content-row { gap: 7px; }
+    .canvas-wrap { border-radius: 16px; padding: 2px; }
+    .canvas-wrap::after { border-radius: 14px; inset: 2px; }
+    .canvas-wrap canvas { border-radius: 14px; }
+
+    .ai-panel { flex: 0 0 180px; padding: 8px; gap: 6px; border-radius: 12px; }
+    .ai-head { padding-bottom: 6px; gap: 6px; }
+    .ai-avatar { width: 24px; height: 24px; font-size: 0.78rem; }
+    .ai-avatar::after { width: 7px; height: 7px; border-width: 1.5px; }
+    .ai-head-text { display: none; }
+    .ai-msg { font-size: 0.66rem; padding: 7px; line-height: 1.5; border-left-width: 2px; border-radius: 4px 10px 10px 10px; }
+
+    .controls-row {
+      padding: 12px 14px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      gap: 12px;
+      border-radius: 20px;
+    }
+
+    .move-group { gap: 12px; }
+
+    .pad-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      gap: 2px;
+      box-shadow: 0 5px 0 #07141f, 0 7px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .pad-btn:active, .pad-btn.pressed {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 #07141f, 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .pad-arrow { font-size: 1.55rem; }
+    .pad-sub { font-size: 0.58rem; letter-spacing: 1px; }
+
+    .jump-btn {
+      flex: 0 0 auto;
+      width: 120px;
+      min-width: 120px;
+      max-width: 120px;
+      height: 72px;
+      border-radius: 20px;
+      gap: 8px;
+      box-shadow: 0 5px 0 #8a5a10, 0 7px 20px rgba(201, 136, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    .jump-btn:active, .jump-btn.pressed {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 #8a5a10, 0 3px 8px rgba(201, 136, 42, 0.4);
+    }
+
+    .jump-arrow { font-size: 1.55rem; }
+    .jump-text { font-size: 1rem; letter-spacing: 1.5px; }
+    .jump-hint { display: none; }
+  }
+
+  @media (max-width: 520px) and (orientation: portrait) {
+    .app { padding: 5px; gap: 5px; padding-bottom: calc(5px + env(safe-area-inset-bottom)); }
+    .topbar { padding: 5px 8px; gap: 6px; border-radius: 10px; }
+    .brand-badge { width: 26px; height: 26px; font-size: 0.82rem; border-radius: 7px; }
+    .brand h1 { font-size: 0.76rem; }
+    .stats { gap: 3px; }
+    .stat { padding: 2px 6px; min-width: 44px; border-radius: 7px; }
+    .stat small { font-size: 0.42rem; margin-bottom: 1px; }
+    .stat b { font-size: 0.74rem; }
+    .top-actions { gap: 3px; }
+    .action-btn { padding: 5px 8px; font-size: 0.64rem; border-radius: 16px; }
+    .action-btn.icon-only { padding: 5px 7px; font-size: 0.78rem; }
+
+    .content-row { gap: 5px; }
+    .canvas-wrap { border-radius: 12px; padding: 2px; }
+    .canvas-wrap::after { border-radius: 10px; inset: 2px; }
+    .canvas-wrap canvas { border-radius: 10px; }
+
+    .ai-panel { flex: 0 0 128px; padding: 6px; gap: 5px; border-radius: 10px; }
+    .ai-head { padding-bottom: 5px; gap: 5px; border-bottom-width: 1px; }
+    .ai-avatar { width: 22px; height: 22px; font-size: 0.72rem; }
+    .ai-avatar::after { width: 6px; height: 6px; border-width: 1.2px; bottom: 0; right: 0; }
+    .ai-head-text { display: none; }
+    .ai-msg {
+      font-size: 0.62rem;
+      padding: 5px 6px;
+      line-height: 1.48;
+      border-left-width: 2px;
+      border-radius: 3px 8px 8px 8px;
+    }
+    .ai-msg .stat { padding: 0 2px; }
+    .ai-tip { display: none; }
+
+    .controls-row {
+      padding: 10px 12px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      gap: 10px;
+      border-radius: 16px;
+    }
+    .move-group { gap: 10px; }
+
+    .pad-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      gap: 2px;
+      box-shadow: 0 4px 0 #07141f, 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .pad-btn:active, .pad-btn.pressed {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #07141f, 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    .pad-arrow { font-size: 1.4rem; }
+    .pad-sub { font-size: 0.54rem; letter-spacing: 0.8px; }
+
+    .jump-btn {
+      width: 110px;
+      min-width: 110px;
+      max-width: 110px;
+      height: 64px;
+      border-radius: 18px;
+      gap: 6px;
+      box-shadow: 0 4px 0 #8a5a10, 0 6px 16px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    .jump-btn:active, .jump-btn.pressed {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #8a5a10, 0 2px 6px rgba(201, 136, 42, 0.4);
+    }
+    .jump-arrow { font-size: 1.4rem; }
+    .jump-text { font-size: 0.92rem; letter-spacing: 1.2px; }
+    .jump-hint { display: none; }
+  }
+
+  @media (max-width: 400px) and (orientation: portrait) {
+    .ai-panel { flex: 0 0 115px; padding: 5px; gap: 4px; }
+    .ai-avatar { width: 20px; height: 20px; font-size: 0.66rem; }
+    .ai-msg { font-size: 0.58rem; padding: 4px 5px; line-height: 1.45; }
+    .stat { padding: 2px 5px; min-width: 40px; }
+    .stat small { font-size: 0.4rem; }
+    .stat b { font-size: 0.7rem; }
+    .action-btn { padding: 4px 7px; font-size: 0.6rem; }
+    .brand h1 { font-size: 0.7rem; }
+
+    .controls-row {
+      padding: 8px 10px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      gap: 8px;
+      border-radius: 14px;
+    }
+    .move-group { gap: 8px; }
+
+    .pad-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+    }
+    .pad-arrow { font-size: 1.3rem; }
+    .pad-sub { font-size: 0.5rem; }
+
+    .jump-btn {
+      width: 100px;
+      min-width: 100px;
+      max-width: 100px;
+      height: 60px;
+      border-radius: 16px;
+      gap: 5px;
+    }
+    .jump-arrow { font-size: 1.3rem; }
+    .jump-text { font-size: 0.85rem; }
+  }
+
+  @media (orientation: landscape) and (max-height: 560px) {
+    .app {
+      padding: 6px;
+      gap: 6px;
+      max-width: none;
+      padding-bottom: calc(6px + env(safe-area-inset-bottom));
+    }
+    .topbar { padding: 4px 10px; gap: 8px; border-radius: 10px; }
+    .brand-badge { width: 26px; height: 26px; font-size: 0.85rem; border-radius: 7px; }
+    .brand h1 { font-size: 0.8rem; }
+    .brand h1 span { display: none; }
+    .stats { gap: 3px; }
+    .stat { padding: 2px 7px; min-width: 44px; border-radius: 7px; }
+    .stat small { font-size: 0.44rem; margin-bottom: 1px; }
+    .stat b { font-size: 0.74rem; }
+    .action-btn { padding: 5px 9px; font-size: 0.66rem; border-radius: 16px; }
+    .action-btn.icon-only { padding: 5px 7px; font-size: 0.8rem; }
+
+    .content-row { gap: 6px; }
+    .canvas-wrap { border-radius: 12px; padding: 2px; }
+    .canvas-wrap::after { border-radius: 10px; inset: 2px; }
+    .canvas-wrap canvas { border-radius: 10px; }
+
+    .ai-panel { flex: 0 0 210px; padding: 8px; gap: 6px; border-radius: 12px; }
+    .ai-head { padding-bottom: 6px; gap: 6px; }
+    .ai-avatar { width: 28px; height: 28px; font-size: 0.85rem; }
+    .ai-avatar::after { width: 7px; height: 7px; border-width: 1.5px; }
+    .ai-head-text h3 { font-size: 0.76rem; }
+    .ai-head-text p { display: none; }
+    .ai-msg { font-size: 0.67rem; padding: 7px 8px; line-height: 1.5; border-left-width: 2px; border-radius: 4px 10px 10px 10px; }
+    .ai-tip { font-size: 0.56rem; }
+
+    .controls-row {
+      padding: 8px 14px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      gap: 12px;
+      border-radius: 14px;
+    }
+    .move-group { gap: 10px; }
+
+    .pad-btn {
+      width: 72px;
+      height: 60px;
+      border-radius: 16px;
+      gap: 2px;
+      box-shadow: 0 4px 0 #07141f, 0 5px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .pad-btn:active, .pad-btn.pressed {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #07141f, 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    .pad-arrow { font-size: 1.35rem; }
+    .pad-sub { font-size: 0.54rem; letter-spacing: 0.8px; }
+
+    .jump-btn {
+      flex: 0 0 auto;
+      width: 120px;
+      min-width: 120px;
+      max-width: 120px;
+      height: 60px;
+      border-radius: 16px;
+      gap: 8px;
+      box-shadow: 0 4px 0 #8a5a10, 0 5px 16px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    .jump-btn:active, .jump-btn.pressed {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #8a5a10, 0 2px 6px rgba(201, 136, 42, 0.4);
+    }
+    .jump-arrow { font-size: 1.35rem; }
+    .jump-text { font-size: 0.92rem; letter-spacing: 1.2px; }
+    .jump-hint { display: none; }
+  }
+
+  @media (orientation: landscape) and (max-height: 420px) {
+    .app { padding: 4px; gap: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); }
+    .topbar { padding: 2px 7px; }
+    .brand-badge { width: 22px; height: 22px; font-size: 0.72rem; }
+    .brand h1 { font-size: 0.68rem; }
+    .stat { padding: 2px 6px; min-width: 38px; }
+    .stat small { font-size: 0.4rem; }
+    .stat b { font-size: 0.66rem; }
+    .action-btn { padding: 3px 7px; font-size: 0.58rem; }
+
+    .ai-panel { flex: 0 0 190px; padding: 6px; gap: 4px; }
+    .ai-msg { font-size: 0.62rem; padding: 5px 6px; line-height: 1.48; }
+
+    .controls-row { padding: 6px 12px; padding-bottom: calc(6px + env(safe-area-inset-bottom)); gap: 10px; }
+    .move-group { gap: 8px; }
+
+    .pad-btn { width: 62px; height: 54px; border-radius: 14px; }
+    .pad-arrow { font-size: 1.2rem; }
+    .pad-sub { font-size: 0.5rem; }
+
+    .jump-btn { width: 110px; min-width: 110px; max-width: 110px; height: 54px; border-radius: 14px; gap: 6px; }
+    .jump-arrow { font-size: 1.2rem; }
+    .jump-text { font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-badge">🇭🇰</div>
+      <h1>香港經濟貢獻 <span>· 無限爬升</span></h1>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><small>高度</small><b class="gold" id="altitudeDisplay">0</b></div>
+      <div class="stat"><small>徽章</small><b class="green" id="badgeDisplay">0</b></div>
+      <div class="stat"><small>分數</small><b class="cyan" id="scoreDisplay">0</b></div>
+    </div>
+
+    <div class="top-actions">
+      <button class="action-btn primary" id="startBtn">▶ 開始</button>
+      <button class="action-btn icon-only" id="resetBtn" aria-label="重新開始">⟲</button>
+    </div>
+  </header>
+
+  <div class="content-row">
+    <div class="game-col">
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas"></canvas>
+      </div>
+    </div>
+
+    <aside class="ai-panel">
+      <div class="ai-head">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-head-text">
+          <h3>小港 · AI 經濟顧問</h3>
+          <p>實時互動 · 知識導航</p>
+        </div>
+      </div>
+      <div class="ai-msg" id="aiMessage">
+        喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>
+        撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>
+        用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>
+        收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽 🎓
+      </div>
+      <div class="ai-tip" id="aiTip">💡 空白鍵 / 點擊畫面開始</div>
+    </aside>
+  </div>
+
+  <div class="controls-row">
+    <div class="move-group">
+      <button class="pad-btn" id="btnLeft" aria-label="向左移動">
+        <span class="pad-arrow">◀</span>
+        <span class="pad-sub">左移</span>
+      </button>
+      <button class="pad-btn" id="btnRight" aria-label="向右移動">
+        <span class="pad-arrow">▶</span>
+        <span class="pad-sub">右移</span>
+      </button>
+    </div>
+    <button class="jump-btn" id="btnJump" aria-label="跳躍">
+      <span class="jump-arrow">⬆</span>
+      <span class="jump-text">跳躍</span>
+      <span class="jump-hint">空中可再跳</span>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   香港經濟貢獻 · 無限爬升
+   画布自由拉伸 · 角色/文字等比不变形 · AI 常驻右侧
+   ============================================================ */
+
+/* ---------- 逻辑尺寸 ---------- */
+const LOGICAL_H = 720;         // 逻辑高度固定
+let CW = 480;                  // 逻辑宽度动态（由屏幕比例决定）
+const CH = LOGICAL_H;
+const BASE_Y = 560;            // 地面逻辑 Y
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+/* ---------- DOM ---------- */
+const aiMessage = document.getElementById('aiMessage');
+const aiTip = document.getElementById('aiTip');
+const altitudeDisplay = document.getElementById('altitudeDisplay');
+const badgeDisplay = document.getElementById('badgeDisplay');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const btnLeft = document.getElementById('btnLeft');
+const btnRight = document.getElementById('btnRight');
+const btnJump = document.getElementById('btnJump');
+
+/* ---------- 物理常數 ---------- */
+const GRAVITY = 0.62;
+const JUMP_V = -14.8;
+const MOVE_SPEED = 6.4;
+const PLAYER_W = 36, PLAYER_H = 44;
+const PLATFORM_H = 14;
+
+/* ---------- 遊戲狀態 ---------- */
+let gameState = 'menu';
+let frame = 0;
+let cameraY = 0;
+let score = 0;
+let badgeCount = 0;
+let altitude = 0;
+let combo = 0;
+let comboTimer = 0;
+let aiCooldown = 0;
+let highestY = BASE_Y;
+let platforms = [];
+let badges = [];
+let particles = [];
+let milestonesHit = new Set();
+let typesCollected = new Set();
+
+const keys = { left: false, right: false };
+
+const player = {
+  x: CW / 2 - PLAYER_W / 2,
+  y: BASE_Y - PLAYER_H,
+  w: PLAYER_W, h: PLAYER_H,
+  vx: 0, vy: 0,
+  canDoubleJump: true
+};
+
+/* ---------- 震動反饋 ---------- */
+const supportsVibrate = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+function hapticTap() {
+  if (!supportsVibrate) return;
+  try { navigator.vibrate(8); } catch(e) {}
+}
+
+/* ============================================================
+   画布尺寸自适应（核心：等比缩放，角色/文字不变形）
+   ============================================================ */
+function resizeCanvas() {
+  const displayW = canvas.clientWidth;
+  const displayH = canvas.clientHeight;
+  if (displayW <= 0 || displayH <= 0) return;
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = displayW * dpr;
+  canvas.height = displayH * dpr;
+
+  // 逻辑高度固定 720，按显示高度计算缩放比例
+  const scale = displayH / LOGICAL_H;
+  ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+
+  // 逻辑宽度 = 720 * (显示宽 / 显示高)
+  CW = LOGICAL_H * (displayW / displayH);
+
+  // 调整玩家/平台范围
+  if (player) {
+    if (player.x + player.w > CW) player.x = Math.max(0, CW - player.w);
+    if (player.x < 0) player.x = 0;
+  }
+  platforms = platforms.filter(p => p.x < CW);
+  badges = badges.filter(b => b.x < CW);
+
+  // 立即重绘
+  draw();
+}
+
+/* ============================================================
+   徽章類型
+   ============================================================ */
+const BADGE_TYPES = [
+  { id: 'finance',    label: '金融', color: '#ffd966', icon: '💹' },
+  { id: 'trade',      label: '貿易', color: '#6ec8ff', icon: '📦' },
+  { id: 'aviation',   label: '航空', color: '#7dffb0', icon: '✈️' },
+  { id: 'port',       label: '港口', color: '#c084fc', icon: '🚢' },
+  { id: 'legal',      label: '專業', color: '#ff9f6e', icon: '⚖️' },
+  { id: 'innovation', label: '創科', color: '#f472b6', icon: '🔬' }
+];
+
+/* ============================================================
+   AI 知識庫
+   ============================================================ */
+const AI_KNOWLEDGE = {
+  finance: [
+    '執到 <b>金融徽章</b>！💹 香港 2025 年 IPO 集資額 <span class="stat">2,858 億港元</span>，全球第一！全年 119 家企業上市，其中 <span class="stat">94%</span> 來自內地，幫國家實體經濟吸國際資本。',
+    '香港處理全球約 <span class="stat">75%</span> 的離岸人民幣支付款額，係最大嘅離岸人民幣樞紐。截至 2025 年底，香港人民幣存款餘額約 <span class="stat">1.1 萬億元</span>，為全球包括「一帶一路」地區提供流動性支持。',
+    '國家財政部已連續 <span class="stat">18 年</span> 在港發行人民幣國債，累計總額達 <span class="stat">4,635 億元人民幣</span>。2026 年計劃發行 <span class="stat">840 億元</span>，香港係國家推進人民幣國際化嘅核心平台。',
+    '2025 年香港管理資產總值創 <span class="stat">42.2 萬億港元</span> 歷史新高，按年大升 <span class="stat">20%</span>，淨資金流入急升 <span class="stat">193%</span>。香港已超越瑞士，成為<span class="hl">全球最大的跨境財富管理中心</span>。'
+  ],
+  trade: [
+    '2025 年香港商品貿易總額按年增長 <span class="stat">17.5%</span>，全球排名躍升至<span class="hl">第五位</span>，超越日本、英國！轉口貿易額達 <span class="stat">7,060 億美元</span>，佔出口總值超過 <span class="stat">93%</span>。',
+    '香港超過 <span class="stat">八成</span> 的轉口貿易與中國內地直接相關。2025 年內地貢獻香港出口的 <span class="stat">60%</span> 和進口的 <span class="stat">44%</span>，香港直接承接內地外貿增長紅利，係內地高附加值商品對外輸出嘅關鍵跳板。',
+    '香港已與 <span class="stat">21 個經濟體</span> 簽署自貿協定、與 <span class="stat">34 個</span> 海外經濟體簽署投資協定。2025 年東盟係香港第二大貿易夥伴，佔香港全球商品貿易額 <span class="stat">15.3%</span>，市場多元化格局加快形成。'
+  ],
+  aviation: [
+    '香港國際機場 2025 年貨運量達 <span class="stat">507 萬公噸</span>，<span class="stat">第 15 次</span> 蟬聯全球最繁忙貨運機場！機場連接全球超過 <span class="stat">220 個航點</span>，高價值電子產品、冷鏈醫藥經香港高效流轉，支撐國家高端供應鏈安全。',
+    '三跑道系統投入運作後，香港正擴大「機場城市」版圖，並在東莞建設物流園，將大灣區空運貨物高效匯聚。香港承載大量內地高附加值商品空運出口，正從傳統轉運地升級為<span class="hl">國家供應鏈的風控中樞</span>。'
+  ],
+  port: [
+    '香港港口 2025 年處理 <span class="stat">1,299 萬 TEU</span>，其中 <span class="stat">73%</span> 為轉運貨物，近半數直接依託珠江三角洲。葵青貨櫃碼頭承擔全港 <span class="stat">75.2%</span> 的載貨集裝箱，係華南地區與世界之間的關鍵水上節點。',
+    '香港正推動港口從「追求規模」轉向<span class="hl">「高價值創造」</span>。港口社區系統已吸引逾 <span class="stat">8,000 家</span> 企業註冊，賦能貿易融資；LME 金屬交割倉落戶，強化國家大宗商品定價話語權。香港貨櫃船平均停留僅 <span class="stat">1 天</span>，效率全球領先。'
+  ],
+  legal: [
+    '香港係國家唯一實行 <span class="stat">普通法</span> 的司法管轄區，與國際商業規則無縫接軌。2025 年 12 月，「<span class="hl">香港專業服務出海平台</span>」正式啟動，為內地企業出海提供法律、金融、會計等高水平專業服務配對支援。',
+    '「內地企業出海專班」至今已協助超過 <span class="stat">340 間</span> 內地企業來港設立或擴展業務，其中約 <span class="stat">三成</span> 更把香港設為地區或國際總部／企業財資中心。香港輸出嘅唔止係服務，仲係<span class="hl">規則連接</span>——幫內地企業用國際聽得明的方式參與全球競爭。',
+    '2007 年起內地與香港會計準則等效互認。今年在香港設立的<span class="hl">國際調解院總部</span>，充分顯示國際社會對香港法律專業的高度認同。香港專業服務係內地企業「出海」的最佳拍檔。'
+  ],
+  innovation: [
+    '新田科技城位於北部都會區心臟地帶，全面投入運營後預計每年為香港 GDP 貢獻至少 <span class="stat">2,500 億港元</span>（約佔 2024 年 GDP 的 7.8%），提供超過 <span class="stat">30 萬個</span> 全職崗位。新田科技城聚焦生命健康科技、人工智能與機器人、微電子與先進產業，對接國家<span class="hl">新質生產力</span>發展戰略。',
+    '「深圳—香港—廣州」科技集群在《2025 全球創新指數》中首次排名<span class="hl">全球第一</span>。香港初創企業從 2015 年約 <span class="stat">1,500 間</span> 躍升至 2025 年超過 <span class="stat">5,200 間</span>，科學園和數碼港培育了約 <span class="stat">20 家獨角獸</span>。',
+    '北部都會區佔香港總面積約 <span class="stat">三分之一</span>，與深圳接壤，係香港深度參與粵港澳大灣區建設、更好融入國家發展大局的重要抓手。新田科技城提供約 <span class="stat">210 公頃</span> 新創科土地，可與大灣區內地城市完整的產業供應鏈結合，承接河套香港園區的科研成果轉化並進行產業化。'
+  ]
+};
+
+const MILESTONES = [
+  { h: 100, msg: '🌆 100 米！香港嘅天際線都係咁一層層疊上去。繼續上！順帶一提：2025 年香港 GDP 達 <span class="stat">3.33 萬億港元</span>，在大灣區佔比約 <span class="stat">20%</span>。' },
+  { h: 300, msg: '🚀 300 米！你嘅高度已經超越中環 IFC 喇！香港對國家嘅貢獻都係咁——冇最高，只有更高。大灣區 2025 年經濟總量突破 <span class="stat">15 萬億元</span>，香港係其中關鍵一員。' },
+  { h: 500, msg: '🏆 500 米！全場焦點！CEPA 實施超過 20 年，2025 年兩地貨物貿易總額約 <span class="stat">56,000 億港元</span>，係 2003 年的三倍多。香港獨享的制度優勢，就係國家給予嘅最大支持。' },
+  { h: 800, msg: '⭐ 800 米！你勁過大部分同學仔喇！香港連續多年被評為全球最自由經濟體，2025 年更超越瑞士成為<span class="hl">全球最大跨境財富管理中心</span>。香港嘅競爭力，就係國家嘅競爭力。' },
+  { h: 1200, msg: '🔥 1,200 米！你已經係 legend 級數！最後提提你：北部都會區新田科技城預計每年貢獻香港 GDP 至少 <span class="stat">2,500 億港元</span>，創科就係香港同國家嘅未來。' }
+];
+
+const knowledgeShown = {};
+BADGE_TYPES.forEach(t => { knowledgeShown[t.id] = []; });
+
+function pickKnowledge(typeId) {
+  const pool = AI_KNOWLEDGE[typeId];
+  const shown = knowledgeShown[typeId];
+  if (shown.length >= pool.length) shown.length = 0;
+  const remaining = [];
+  for (let i = 0; i < pool.length; i++) if (!shown.includes(i)) remaining.push(i);
+  const idx = remaining[Math.floor(Math.random() * remaining.length)];
+  shown.push(idx);
+  return pool[idx];
+}
+
+/* ============================================================
+   工具
+   ============================================================ */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function bumpEl(el) {
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
+}
+
+function setAIMessage(html) {
+  aiMessage.innerHTML = html;
+  aiMessage.classList.remove('updated');
+  void aiMessage.offsetWidth;
+  aiMessage.classList.add('updated');
+  aiMessage.scrollTop = 0;
+}
+
+function updateHUD() {
+  if (altitudeDisplay.textContent !== String(altitude)) { altitudeDisplay.textContent = altitude; bumpEl(altitudeDisplay); }
+  if (badgeDisplay.textContent !== String(badgeCount)) { badgeDisplay.textContent = badgeCount; bumpEl(badgeDisplay); }
+  if (scoreDisplay.textContent !== String(score)) { scoreDisplay.textContent = score; bumpEl(scoreDisplay); }
+}
+
+/* ============================================================
+   初始化
+   ============================================================ */
+function initGame() {
+  player.x = CW / 2 - PLAYER_W / 2;
+  player.y = BASE_Y - PLAYER_H;
+  player.vx = 0; player.vy = 0; player.canDoubleJump = true;
+
+  cameraY = player.y - CH * 0.58;
+  highestY = BASE_Y;
+
+  platforms = [{ x: 0, y: BASE_Y, w: CW, h: PLATFORM_H, type: 'normal' }];
+  badges = []; particles = [];
+
+  for (let i = 0; i < 14; i++) {
+    const gap = 78 + Math.random() * 32;
+    const py = highestY - gap;
+    let pw = 80 + Math.random() * 45;
+    pw = Math.min(pw, CW * 0.45);
+    const px = Math.random() * Math.max(1, (CW - pw));
+    platforms.push({ x: px, y: py, w: pw, h: PLATFORM_H, type: 'normal' });
+    highestY = py;
+
+    if (Math.random() < 0.45) {
+      const bt = BADGE_TYPES[Math.floor(Math.random() * BADGE_TYPES.length)];
+      badges.push({ x: px + pw / 2, y: py - 46, size: 32, phase: Math.random() * Math.PI * 2, ...bt });
+    }
+  }
+
+  score = 0; badgeCount = 0; altitude = 0; combo = 0; comboTimer = 0; aiCooldown = 0;
+  milestonesHit = new Set();
+  typesCollected = new Set();
+  BADGE_TYPES.forEach(t => { knowledgeShown[t.id] = []; });
+  keys.left = false; keys.right = false;
+
+  altitudeDisplay.textContent = '0';
+  badgeDisplay.textContent = '0';
+  scoreDisplay.textContent = '0';
+}
+
+/* ============================================================
+   生成 & 清理
+   ============================================================ */
+function generatePlatforms() {
+  while (highestY > cameraY - 420) {
+    const diff = Math.min(altitude / 45, 36);
+    const gap = 66 + Math.random() * 36 + diff;
+    const py = highestY - gap;
+    let pw = Math.max(62, 108 - diff * 0.35 + Math.random() * 38);
+    pw = Math.min(pw, CW * 0.45);
+    const px = Math.random() * Math.max(1, (CW - pw));
+
+    let type = 'normal';
+    if (altitude > 150 && Math.random() < 0.15) type = 'danger';
+
+    platforms.push({ x: px, y: py, w: pw, h: PLATFORM_H, type });
+    highestY = py;
+
+    if (Math.random() < 0.42 && type === 'normal') {
+      const bt = BADGE_TYPES[Math.floor(Math.random() * BADGE_TYPES.length)];
+      badges.push({ x: px + pw / 2, y: py - 46, size: 32, phase: Math.random() * Math.PI * 2, ...bt });
+    }
+  }
+}
+
+function cleanupObjects() {
+  platforms = platforms.filter(p => p.y - cameraY < CH + 140);
+  badges = badges.filter(b => b.y - cameraY < CH + 140);
+}
+
+/* ============================================================
+   粒子
+   ============================================================ */
+function spawnParticles(x, y, color, count, power) {
+  for (let i = 0; i < count; i++) {
+    const a = (Math.PI * 2 / count) * i + Math.random() * 0.5;
+    const sp = (1.5 + Math.random() * 2.5) * (power || 1);
+    particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1, r: 2 + Math.random() * 2.5, life: 26 + Math.random() * 12, maxLife: 38, color });
+  }
+}
+
+/* ============================================================
+   跳躍
+   ============================================================ */
+function doJump() {
+  if (gameState === 'menu' || gameState === 'gameover') { startGame(); return; }
+  if (gameState !== 'playing') return;
+  if (!player.canDoubleJump) return;
+
+  player.vy = JUMP_V * 0.92;
+  player.canDoubleJump = false;
+  spawnParticles(player.x + player.w / 2, player.y + player.h, '#6ec8ff', 9, 1.1);
+
+  btnJump.classList.add('pressed');
+  setTimeout(() => btnJump.classList.remove('pressed'), 130);
+  hapticTap();
+}
+
+/* ============================================================
+   更新
+   ============================================================ */
+function update() {
+  const dir = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+  if (dir !== 0) player.vx = dir * MOVE_SPEED;
+  else player.vx *= 0.78;
+  player.x += player.vx;
+
+  if (player.x + player.w < 0) player.x = CW;
+  if (player.x > CW) player.x = -player.w;
+
+  player.vy += GRAVITY;
+  const prevY = player.y;
+  player.y += player.vy;
+
+  if (player.vy > 0) {
+    for (const p of platforms) {
+      const prevBottom = prevY + player.h;
+      const currBottom = player.y + player.h;
+      if (prevBottom <= p.y + 2 && currBottom >= p.y &&
+          player.x + player.w - 6 > p.x && player.x + 6 < p.x + p.w) {
+        if (p.type === 'danger') {
+          spawnParticles(player.x + player.w / 2, player.y + player.h / 2, '#ef4444', 18, 1.6);
+          endGame(); return;
+        }
+        player.y = p.y - player.h;
+        player.vy = JUMP_V;
+        player.canDoubleJump = true;
+        spawnParticles(player.x + player.w / 2, p.y, '#5fe0ff', 5, 0.7);
+        break;
+      }
+    }
+  }
+
+  const targetCam = player.y - CH * 0.58;
+  if (targetCam < cameraY) cameraY = targetCam;
+
+  generatePlatforms();
+  cleanupObjects();
+
+  const pcx = player.x + player.w / 2;
+  const pcy = player.y + player.h / 2;
+  for (let i = badges.length - 1; i >= 0; i--) {
+    const b = badges[i];
+    const dx = pcx - b.x, dy = pcy - b.y;
+    if (Math.hypot(dx, dy) < b.size / 2 + 20) collectBadge(b, i);
+  }
+
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const pt = particles[i];
+    pt.x += pt.vx; pt.y += pt.vy; pt.vy += 0.14; pt.vx *= 0.98; pt.life--;
+    if (pt.life <= 0) particles.splice(i, 1);
+  }
+
+  const newAlt = Math.max(0, Math.floor((BASE_Y - (player.y + player.h)) / 8));
+  if (newAlt > altitude) {
+    score += (newAlt - altitude) * 2;
+    altitude = newAlt;
+    updateHUD();
+  }
+
+  if (comboTimer > 0) { comboTimer--; if (comboTimer === 0) combo = 0; }
+  if (aiCooldown > 0) aiCooldown--;
+
+  for (const m of MILESTONES) {
+    if (altitude >= m.h && !milestonesHit.has(m.h)) {
+      milestonesHit.add(m.h);
+      if (aiCooldown <= 0) { setAIMessage('<span class="hl">🎉 成就解鎖</span><br>' + m.msg); aiCooldown = 200; }
+    }
+  }
+
+  if (player.y - cameraY > CH + 80) { endGame(); return; }
+}
+
+/* ============================================================
+   收集徽章
+   ============================================================ */
+function collectBadge(b, index) {
+  badges.splice(index, 1);
+  combo = comboTimer > 0 ? combo + 1 : 1;
+  comboTimer = 130;
+
+  const comboBonus = (combo - 1) * 15;
+  const gain = 30 + comboBonus;
+  score += gain; badgeCount++; typesCollected.add(b.id);
+  updateHUD();
+
+  spawnParticles(b.x, b.y, b.color, 14, 1.2);
+  hapticTap();
+
+  if (aiCooldown <= 0) {
+    const know = pickKnowledge(b.id);
+    const comboLine = combo > 1
+      ? `<span class="hl">COMBO ×${combo}</span>　+${gain} 分<br><br>`
+      : `執到 <b>${b.icon} ${b.label}徽章</b>　+${gain} 分<br><br>`;
+    setAIMessage(comboLine + know);
+    aiCooldown = 170;
+    aiTip.textContent = `💡 已解鎖：${b.label}領域知識卡`;
+  }
+}
+
+/* ============================================================
+   開始 / 結束
+   ============================================================ */
+function startGame() {
+  initGame();
+  gameState = 'playing';
+  startBtn.textContent = '▶ 爬升中…';
+  startBtn.disabled = true;
+  setAIMessage(
+    '喂！準備好未？🏃‍♂️<br><br>' +
+    '用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
+    '一路向上爬，收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽！<br><br>' +
+    '小心紅色危險平台，踩到即 GG 呀！'
+  );
+  aiTip.textContent = '💡 ◀ ▶ 移動 · 跳躍掣空中再跳';
+  hapticTap();
+}
+
+function endGame() {
+  gameState = 'gameover';
+  startBtn.textContent = '▶ 再挑機';
+  startBtn.disabled = false;
+  setAIMessage(
+    `🎮 <span class="hl">GG！</span>你爬到 <span class="stat">${altitude} 米</span>，` +
+    `執咗 <span class="stat">${badgeCount}</span> 個徽章，` +
+    `解鎖 <span class="stat">${typesCollected.size}/6</span> 個經濟領域。<br><br>` +
+    `香港喺金融、貿易、航空、航運、專業服務同創科六大方面，都係國家經濟嘅` +
+    `<span class="hl">「超級聯繫人」同「超級增值人」</span>。` +
+    `再嚟挑戰，集齊全套知識卡！💪`
+  );
+  aiTip.textContent = '💡 撳「再挑機」繼續';
+}
+
+/* ============================================================
+   繪製（全部使用逻辑坐标，等比缩放）
+   ============================================================ */
+function drawBackground() {
+  const g = ctx.createLinearGradient(0, 0, 0, CH);
+  g.addColorStop(0, '#050b14'); g.addColorStop(0.45, '#0b1e30');
+  g.addColorStop(0.8, '#133048'); g.addColorStop(1, '#1b3f5c');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, CW, CH);
+
+  const starPar = cameraY * 0.08;
+  ctx.fillStyle = 'rgba(200, 230, 255, 0.5)';
+  for (let i = 0; i < 55; i++) {
+    const sx = (i * 131 + 37) % CW;
+    const sy = ((i * 79 - starPar) % CH + CH) % CH;
+    const sr = (i % 3) * 0.4 + 0.6;
+    ctx.globalAlpha = 0.3 + (i % 5) * 0.12;
+    ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  const factor = 0.38, parY = cameraY * factor, rowH = 175;
+  const startRow = Math.floor((parY - 350) / rowH);
+
+  for (let r = startRow; r < startRow + 9; r++) {
+    const worldY = r * rowH, screenY = worldY - parY;
+    if (screenY < -320 || screenY > CH + 120) continue;
+    for (let i = 0; i < 12; i++) {
+      const seed = Math.abs(r * 37 + i * 53 + 101) % 997;
+      const bw = 32 + (seed % 34), bh = 50 + ((seed * 7) % 100);
+      const bx = i * 52 + ((seed * 11) % 26) - 34;
+      ctx.fillStyle = 'rgba(9, 22, 38, 0.9)';
+      ctx.fillRect(bx, screenY - bh, bw, bh);
+      ctx.fillStyle = 'rgba(255, 205, 120, 0.22)';
+      for (let wy = 9; wy < bh - 12; wy += 17)
+        for (let wx = 6; wx < bw - 8; wx += 13)
+          if ((seed + wy * 3 + wx * 7) % 9 < 4) ctx.fillRect(bx + wx, screenY - bh + wy, 5, 7);
+      if (seed % 5 === 0) {
+        const nc = ['#ff5f7e', '#5fe0ff', '#ffd966', '#b07cff'][seed % 4];
+        ctx.fillStyle = nc; ctx.globalAlpha = 0.55;
+        ctx.fillRect(bx + 4, screenY - bh - 4, bw - 8, 3); ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  const fog = ctx.createLinearGradient(0, CH - 150, 0, CH);
+  fog.addColorStop(0, 'rgba(11, 30, 48, 0)'); fog.addColorStop(1, 'rgba(11, 30, 48, 0.85)');
+  ctx.fillStyle = fog; ctx.fillRect(0, CH - 150, CW, 150);
+}
+
+function drawPlatforms() {
+  for (const p of platforms) {
+    const sy = p.y - cameraY;
+    if (sy < -60 || sy > CH + 60) continue;
+    if (p.type === 'danger') {
+      const glow = 0.5 + Math.sin(frame * 0.22) * 0.35;
+      ctx.save(); ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 22 * glow;
+      ctx.fillStyle = '#ef4444'; roundRect(p.x, sy, p.w, p.h, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = '#7f1d1d';
+      for (let i = 5; i < p.w - 5; i += 13) ctx.fillRect(p.x + i, sy + 3, 6, p.h - 6);
+      ctx.fillStyle = '#fecaca'; ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('✖', p.x + p.w / 2, sy + p.h / 2);
+    } else {
+      ctx.save(); ctx.shadowColor = '#4dd8ff'; ctx.shadowBlur = 16;
+      const grad = ctx.createLinearGradient(p.x, sy, p.x, sy + p.h);
+      grad.addColorStop(0, '#6ee6ff'); grad.addColorStop(1, '#1e8fb8');
+      ctx.fillStyle = grad; roundRect(p.x, sy, p.w, p.h, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+      roundRect(p.x + 5, sy + 2, p.w - 10, 3, 2); ctx.fill();
+    }
+  }
+}
+
+function drawBadges() {
+  for (const b of badges) {
+    const sy = b.y - cameraY;
+    if (sy < -60 || sy > CH + 60) continue;
+    const pulse = 1 + Math.sin(frame * 0.13 + b.phase) * 0.1;
+    ctx.save(); ctx.translate(b.x, sy); ctx.scale(pulse, pulse);
+    ctx.shadowColor = b.color; ctx.shadowBlur = 20;
+    ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(0, 0, b.size / 2, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+    ctx.beginPath(); ctx.arc(0, 0, b.size / 2 - 4, 0, Math.PI * 2); ctx.fill();
+    ctx.font = `${b.size * 0.52}px sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#081420'; ctx.fillText(b.icon, 0, 1);
+    ctx.restore();
+  }
+}
+
+function drawPlayer() {
+  const sy = player.y - cameraY;
+  const cx = player.x + player.w / 2;
+  const stretch = 1 + Math.max(-0.14, Math.min(0.14, -player.vy * 0.011));
+  const squash = 1 / stretch;
+
+  ctx.save();
+  ctx.translate(cx, sy + player.h); ctx.scale(squash, stretch); ctx.translate(-cx, -(sy + player.h));
+  ctx.shadowColor = '#ffd966'; ctx.shadowBlur = 26;
+  ctx.fillStyle = '#ffd966'; roundRect(player.x, sy, player.w, player.h, 11); ctx.fill();
+  ctx.shadowBlur = 0;
+
+  const eyeY = sy + player.h * 0.4;
+  ctx.fillStyle = '#101828';
+  ctx.beginPath(); ctx.arc(cx - 7, eyeY, 3.2, 0, Math.PI * 2); ctx.arc(cx + 7, eyeY, 3.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(cx - 6, eyeY - 1, 1.1, 0, Math.PI * 2); ctx.arc(cx + 8, eyeY - 1, 1.1, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#101828'; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.arc(cx, sy + player.h * 0.58, 5, 0.15, Math.PI - 0.15); ctx.stroke();
+  ctx.fillStyle = '#a86f10'; ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('HK', cx, sy + player.h * 0.8);
+  ctx.restore();
+
+  if (player.canDoubleJump && gameState === 'playing') {
+    ctx.strokeStyle = 'rgba(110, 200, 255, ' + (0.35 + Math.sin(frame * 0.2) * 0.2) + ')';
+    ctx.lineWidth = 2; ctx.beginPath();
+    ctx.arc(cx, sy + player.h / 2, player.w * 0.95, 0, Math.PI * 2); ctx.stroke();
+  }
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    const sy = p.y - cameraY;
+    if (sy < -40 || sy > CH + 40) continue;
+    ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, sy, p.r, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawHUD() {
+  if (combo > 1) {
+    const alpha = Math.min(1, comboTimer / 40);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ffb43c'; ctx.font = 'bold 28px "PingFang HK", sans-serif';
+    ctx.textAlign = 'center'; ctx.shadowColor = '#ff8c00'; ctx.shadowBlur = 16;
+    ctx.fillText('COMBO ×' + combo, CW / 2, 54);
+    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  }
+}
+
+function drawMenu() {
+  ctx.fillStyle = 'rgba(4, 10, 20, 0.74)'; ctx.fillRect(0, 0, CW, CH);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffd966'; ctx.font = 'bold 32px "PingFang HK", sans-serif';
+  ctx.shadowColor = '#7a4d00'; ctx.shadowBlur = 20;
+  ctx.fillText('香港經濟貢獻', CW / 2, CH / 2 - 90);
+  ctx.fillText('無限爬升', CW / 2, CH / 2 - 46);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#6ec8ff'; ctx.font = '600 15px "PingFang HK", sans-serif';
+  ctx.fillText('CES 中三專題 · 挑機版', CW / 2, CH / 2 + 4);
+  ctx.fillStyle = '#a8c8e0'; ctx.font = '14px "PingFang HK", sans-serif';
+  ctx.fillText('◀ ▶ 掣左右移動，跳躍掣空中再跳', CW / 2, CH / 2 + 62);
+  ctx.fillText('踩平台自動彈跳，一路向上', CW / 2, CH / 2 + 88);
+  ctx.fillText('收集徽章 · 解鎖 AI 經濟知識卡', CW / 2, CH / 2 + 114);
+  ctx.fillText('小心紅色危險平台 ✖', CW / 2, CH / 2 + 140);
+  const alpha = 0.5 + Math.sin(frame * 0.08) * 0.45;
+  ctx.globalAlpha = alpha; ctx.fillStyle = '#ffd966';
+  ctx.font = 'bold 19px "PingFang HK", sans-serif';
+  ctx.fillText('撳「開始」或空白鍵開波', CW / 2, CH - 110);
+  ctx.globalAlpha = 1;
+}
+
+function drawGameOver() {
+  ctx.fillStyle = 'rgba(4, 10, 20, 0.8)'; ctx.fillRect(0, 0, CW, CH);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ff6b6b'; ctx.font = 'bold 38px "PingFang HK", sans-serif';
+  ctx.shadowColor = '#7f1d1d'; ctx.shadowBlur = 22;
+  ctx.fillText('GG！', CW / 2, CH / 2 - 120); ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffd966'; ctx.font = 'bold 30px "PingFang HK", sans-serif';
+  ctx.fillText(altitude + ' 米', CW / 2, CH / 2 - 56);
+  ctx.fillStyle = '#a8c8e0'; ctx.font = '16px "PingFang HK", sans-serif';
+  ctx.fillText('徽章：' + badgeCount + ' 個', CW / 2, CH / 2 - 6);
+  ctx.fillText('分數：' + score, CW / 2, CH / 2 + 26);
+  ctx.fillText('解鎖領域：' + typesCollected.size + '/6', CW / 2, CH / 2 + 58);
+  const alpha = 0.5 + Math.sin(frame * 0.08) * 0.45;
+  ctx.globalAlpha = alpha; ctx.fillStyle = '#6ec8ff';
+  ctx.font = 'bold 18px "PingFang HK", sans-serif';
+  ctx.fillText('撳「再挑機」繼續', CW / 2, CH / 2 + 140);
+  ctx.globalAlpha = 1;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, CW, CH);
+  drawBackground(); drawPlatforms(); drawBadges(); drawPlayer(); drawParticles(); drawHUD();
+  if (gameState === 'menu') drawMenu();
+  if (gameState === 'gameover') drawGameOver();
+}
+
+/* ============================================================
+   主循環
+   ============================================================ */
+let lastTime = 0, accumulator = 0;
+const STEP = 1000 / 60;
+
+function loop(ts) {
+  if (!lastTime) lastTime = ts;
+  let delta = ts - lastTime; lastTime = ts;
+  if (delta > 120) delta = 120;
+  accumulator += delta;
+  while (accumulator >= STEP) {
+    frame++;
+    if (gameState === 'playing') update();
+    accumulator -= STEP;
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+/* ============================================================
+   輸入
+   ============================================================ */
+function bindMoveButton(btn, key) {
+  btn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    keys[key] = true;
+    btn.classList.add('pressed');
+    hapticTap();
+  });
+  const release = (e) => {
+    if (e) e.preventDefault();
+    keys[key] = false;
+    btn.classList.remove('pressed');
+  };
+  btn.addEventListener('pointerup', release);
+  btn.addEventListener('pointerleave', release);
+  btn.addEventListener('pointercancel', release);
+  btn.addEventListener('lostpointercapture', release);
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+}
+
+bindMoveButton(btnLeft, 'left');
+bindMoveButton(btnRight, 'right');
+
+btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); doJump(); });
+btnJump.addEventListener('contextmenu', e => e.preventDefault());
+
+canvas.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  if (gameState === 'menu' || gameState === 'gameover') startGame();
+  else if (gameState === 'playing') doJump();
+});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.left = true; btnLeft.classList.add('pressed'); e.preventDefault(); }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.right = true; btnRight.classList.add('pressed'); e.preventDefault(); }
+  if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); if (e.repeat) return; doJump(); }
+});
+
+window.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.left = false; btnLeft.classList.remove('pressed'); }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.right = false; btnRight.classList.remove('pressed'); }
+});
+
+document.addEventListener('touchmove', (e) => {
+  if (e.target.closest('.canvas-wrap') || e.target.closest('.controls-row')) e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+
+startBtn.addEventListener('click', startGame);
+
+resetBtn.addEventListener('click', () => {
+  if (gameState === 'playing') endGame();
+  initGame();
+  gameState = 'menu';
+  startBtn.textContent = '▶ 開始';
+  startBtn.disabled = false;
+  setAIMessage(
+    '喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>' +
+    '撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>' +
+    '用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
+    '收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽 🎓'
+  );
+  aiTip.textContent = '💡 空白鍵 / 點擊畫面開始';
+});
+
+/* ============================================================
+   Resize 防抖 & 啟動
+   ============================================================ */
+let resizeTimer = null;
+function onResize() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    resizeCanvas();
+  }, 80);
+}
+
+window.addEventListener('resize', onResize);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 120));
+
+/* 啟動：先確定畫布尺寸，再初始化遊戲 */
+requestAnimationFrame(() => {
+  resizeCanvas();
+  initGame();
+  requestAnimationFrame(loop);
+});
+</script>
+</body>
+</html>
