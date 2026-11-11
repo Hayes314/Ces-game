@@ -200,9 +200,6 @@
     cursor: pointer;
   }
 
-  /* ============================================================
-     AI 面板（支持文字缩放）
-     ============================================================ */
   .ai-panel {
     --ai-zoom: 1;
     flex: 0 0 340px;
@@ -219,9 +216,7 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5);
   }
 
-  .ai-panel.text-zoom {
-    --ai-zoom: 1.38;
-  }
+  .ai-panel.text-zoom { --ai-zoom: 1.38; }
 
   .ai-panel::before {
     content: '';
@@ -263,30 +258,21 @@
   .ai-head-text h3 { font-size: 0.9rem; color: var(--cyan); font-weight: 700; }
   .ai-head-text p { font-size: 0.62rem; color: var(--text-dim); margin-top: 2px; }
 
-  /* ===== 放大閱讀按鈕 ===== */
   .ai-zoom-btn {
     margin-left: auto;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 36px; height: 36px;
     border-radius: 10px;
     background: linear-gradient(180deg, #1a4159, #0d2a3f);
     border: 1px solid var(--border-bright);
     color: var(--cyan);
-    font-family: inherit;
-    font-size: 0.82rem;
-    font-weight: 800;
+    font-family: inherit; font-size: 0.82rem; font-weight: 800;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     transition: all 0.15s ease;
     box-shadow: 0 2px 0 #07141f, inset 0 1px 0 rgba(255, 255, 255, 0.12);
     touch-action: manipulation;
-    outline: none;
-    padding: 0;
-    line-height: 1;
-    letter-spacing: -0.5px;
+    outline: none; padding: 0; line-height: 1; letter-spacing: -0.5px;
   }
 
   .ai-zoom-btn:hover { background: linear-gradient(180deg, #235070, #113048); color: #6ec8ff; }
@@ -303,7 +289,6 @@
     box-shadow: 0 2px 0 #07141f, 0 0 12px rgba(255, 217, 102, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
-  /* AI 对话框：字号随 --ai-zoom 缩放 */
   .ai-msg {
     flex: 1 1 auto; min-height: 0;
     background: rgba(16, 36, 51, 0.9);
@@ -342,8 +327,7 @@
 
   .ai-action-btn {
     display: none;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
     gap: 6px;
     padding: 9px 14px;
     background: linear-gradient(180deg, #1a4159, #0d2a3f);
@@ -373,7 +357,7 @@
   .ai-tip { font-size: 0.66rem; color: var(--text-dim); text-align: right; min-height: 14px; flex-shrink: 0; }
 
   /* ============================================================
-     底部控制栏：左横向摇杆 + 右跳跃
+     底部控制栏：固定长度摇杆（靠左） + 跳跃（靠右）
      ============================================================ */
   .controls-row {
     flex: 0 0 auto;
@@ -389,18 +373,14 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5);
   }
 
-  /* ============================================================
-     严格一维水平摇杆
-     轨道高度 = 摇杆头高度 + 8px（上下各留 4px）
-     摇杆头几乎填满轨道高度，视觉上只能水平滑动
-     ============================================================ */
+  /* ===== 固定长度横向摇杆 ===== */
   .joystick {
     --track-h: 80px;
     --knob-size: 72px;
 
     position: relative;
-    flex: 1 1 auto;
-    max-width: 440px;
+    flex: 0 0 auto;
+    width: 300px;
     height: var(--track-h);
     border-radius: calc(var(--track-h) / 2);
     background: linear-gradient(180deg, #0f2233 0%, #081420 100%);
@@ -429,7 +409,6 @@
       0 4px 14px rgba(0, 0, 0, 0.5);
   }
 
-  /* 中心刻线：只做水平参考 */
   .joystick::before {
     content: "";
     position: absolute;
@@ -445,16 +424,15 @@
     z-index: 1;
   }
 
-  /* 左右箭头提示 */
   .joystick::after {
-    content: "◀\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0▶";
+    content: "◀\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0▶";
     position: absolute;
-    left: 16px;
-    right: 16px;
+    left: 14px;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
     color: rgba(77, 216, 255, 0.16);
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     letter-spacing: 0;
     text-align: center;
     pointer-events: none;
@@ -463,7 +441,6 @@
     overflow: hidden;
   }
 
-  /* 方向填充条 */
   .fill {
     position: absolute;
     top: 50%;
@@ -478,12 +455,10 @@
     transition: opacity 0.18s ease;
   }
 
-  /* ===== 摇杆头：严格垂直居中，只允许水平位移 ===== */
   .knob {
     position: absolute;
     left: 50%;
     top: 50%;
-    /* 用 margin 固定垂直居中，绝不使用 translateY */
     margin-top: calc(var(--knob-size) / -2);
     margin-left: calc(var(--knob-size) / -2);
     width: var(--knob-size);
@@ -500,7 +475,6 @@
     display: grid;
     place-items: center;
     will-change: transform;
-    /* 只允许 translateX，垂直方向由 margin + top 完全固定 */
     transition: transform 0.28s cubic-bezier(.22, 1, .36, 1),
                 box-shadow 0.2s ease;
     pointer-events: none;
@@ -525,7 +499,6 @@
       inset 0 -4px 8px rgba(0, 0, 0, 0.4);
   }
 
-  /* ===== 跳跃按钮 ===== */
   .jump-btn {
     flex: 0 0 auto;
     width: 180px;
@@ -576,17 +549,14 @@
   .jump-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; }
   .jump-hint { font-size: 0.68rem; opacity: 0.9; letter-spacing: 0.5px; }
 
-  /* ============================================================
-     响应式断点
-     ============================================================ */
-
+  /* 响应式 */
   @media (max-width: 1400px) { .ai-panel { flex: 0 0 320px; } }
 
   @media (max-width: 1200px) {
     .ai-panel { flex: 0 0 290px; }
     .ai-msg { font-size: calc(0.79rem * var(--ai-zoom)); }
-    .joystick { --track-h: 72px; --knob-size: 64px; }
-    .jump-btn { width: 160px; height: 72px; }
+    .joystick { --track-h: 74px; --knob-size: 66px; width: 280px; }
+    .jump-btn { width: 160px; height: 74px; }
   }
 
   @media (max-width: 1000px) {
@@ -600,7 +570,7 @@
     .ai-action-btn { font-size: calc(0.72rem * var(--ai-zoom)); padding: 8px 12px; }
     .ai-msg .detail-title { font-size: calc(0.84rem * var(--ai-zoom)); }
     .ai-msg .detail-list li { font-size: calc(0.72rem * var(--ai-zoom)); }
-    .joystick { --track-h: 68px; --knob-size: 60px; max-width: 380px; }
+    .joystick { --track-h: 68px; --knob-size: 60px; width: 260px; }
     .jump-btn { width: 150px; height: 68px; }
   }
 
@@ -635,9 +605,6 @@
     .ai-msg .detail-header { margin-bottom: 7px; padding-bottom: 6px; gap: 5px; }
   }
 
-  /* ============================================================
-     手机竖屏（≤820px，portrait）
-     ============================================================ */
   @media (max-width: 820px) and (orientation: portrait) {
     .app { padding: 7px; gap: 7px; padding-bottom: calc(7px + env(safe-area-inset-bottom)); }
 
@@ -677,10 +644,12 @@
       border-radius: 18px;
     }
 
-    .joystick { --track-h: 72px; --knob-size: 64px; }
+    .joystick { --track-h: 70px; --knob-size: 62px; width: 210px; }
+    .joystick::after { left: 12px; right: 12px; font-size: 0.6rem; }
+
     .jump-btn {
-      width: 140px;
-      height: 76px;
+      width: 130px;
+      height: 70px;
       border-radius: 18px;
       gap: 8px;
       box-shadow: 0 5px 0 #8a5a10, 0 7px 20px rgba(201, 136, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
@@ -691,14 +660,11 @@
       box-shadow: 0 0 0 #8a5a10, 0 3px 8px rgba(201, 136, 42, 0.4);
     }
 
-    .jump-arrow { font-size: 1.55rem; }
-    .jump-text { font-size: 1rem; letter-spacing: 1.5px; }
+    .jump-arrow { font-size: 1.5rem; }
+    .jump-text { font-size: 0.95rem; letter-spacing: 1.5px; }
     .jump-hint { display: none; }
   }
 
-  /* ============================================================
-     小手机竖屏（≤520px）
-     ============================================================ */
   @media (max-width: 520px) and (orientation: portrait) {
     .app { padding: 5px; gap: 5px; padding-bottom: calc(5px + env(safe-area-inset-bottom)); }
     .topbar { padding: 5px 8px; gap: 6px; border-radius: 10px; }
@@ -750,11 +716,12 @@
       border-radius: 16px;
     }
 
-    .joystick { --track-h: 64px; --knob-size: 56px; }
-    .joystick::after { left: 12px; right: 12px; font-size: 0.58rem; }
+    .joystick { --track-h: 62px; --knob-size: 54px; width: 180px; }
+    .joystick::after { left: 10px; right: 10px; font-size: 0.55rem; }
+
     .jump-btn {
-      width: 120px;
-      height: 64px;
+      width: 110px;
+      height: 62px;
       border-radius: 16px;
       gap: 6px;
       box-shadow: 0 4px 0 #8a5a10, 0 6px 16px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -763,14 +730,11 @@
       transform: translateY(4px);
       box-shadow: 0 0 0 #8a5a10, 0 2px 6px rgba(201, 136, 42, 0.4);
     }
-    .jump-arrow { font-size: 1.35rem; }
-    .jump-text { font-size: 0.9rem; letter-spacing: 1.2px; }
+    .jump-arrow { font-size: 1.3rem; }
+    .jump-text { font-size: 0.85rem; letter-spacing: 1.2px; }
     .jump-hint { display: none; }
   }
 
-  /* ============================================================
-     超小屏（≤400px，portrait）
-     ============================================================ */
   @media (max-width: 400px) and (orientation: portrait) {
     .ai-panel { flex: 0 0 115px; padding: 5px; gap: 4px; }
     .ai-avatar { width: 20px; height: 20px; font-size: 0.66rem; }
@@ -792,21 +756,19 @@
       border-radius: 14px;
     }
 
-    .joystick { --track-h: 58px; --knob-size: 50px; }
-    .joystick::after { left: 10px; right: 10px; font-size: 0.52rem; }
+    .joystick { --track-h: 56px; --knob-size: 48px; width: 160px; }
+    .joystick::after { left: 9px; right: 9px; font-size: 0.5rem; }
+
     .jump-btn {
-      width: 110px;
-      height: 58px;
+      width: 100px;
+      height: 56px;
       border-radius: 14px;
       gap: 5px;
     }
-    .jump-arrow { font-size: 1.25rem; }
-    .jump-text { font-size: 0.82rem; }
+    .jump-arrow { font-size: 1.2rem; }
+    .jump-text { font-size: 0.8rem; }
   }
 
-  /* ============================================================
-     手机横屏（高度≤560px）
-     ============================================================ */
   @media (orientation: landscape) and (max-height: 560px) {
     .app {
       padding: 6px;
@@ -851,10 +813,12 @@
       border-radius: 14px;
     }
 
-    .joystick { --track-h: 58px; --knob-size: 50px; max-width: 340px; }
+    .joystick { --track-h: 56px; --knob-size: 48px; width: 230px; }
+    .joystick::after { left: 11px; right: 11px; font-size: 0.56rem; }
+
     .jump-btn {
-      width: 140px;
-      height: 58px;
+      width: 120px;
+      height: 56px;
       border-radius: 16px;
       gap: 8px;
       box-shadow: 0 4px 0 #8a5a10, 0 5px 16px rgba(201, 136, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -863,14 +827,11 @@
       transform: translateY(4px);
       box-shadow: 0 0 0 #8a5a10, 0 2px 6px rgba(201, 136, 42, 0.4);
     }
-    .jump-arrow { font-size: 1.35rem; }
-    .jump-text { font-size: 0.92rem; letter-spacing: 1.2px; }
+    .jump-arrow { font-size: 1.25rem; }
+    .jump-text { font-size: 0.88rem; letter-spacing: 1.2px; }
     .jump-hint { display: none; }
   }
 
-  /* ============================================================
-     极矮横屏（高度≤420px）
-     ============================================================ */
   @media (orientation: landscape) and (max-height: 420px) {
     .app { padding: 4px; gap: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); }
     .topbar { padding: 2px 7px; }
@@ -892,15 +853,15 @@
 
     .controls-row { padding: 4px 12px; padding-bottom: calc(4px + env(safe-area-inset-bottom)); gap: 10px; }
 
-    .joystick { --track-h: 52px; --knob-size: 44px; max-width: 320px; }
+    .joystick { --track-h: 50px; --knob-size: 42px; width: 210px; }
     .jump-btn {
-      width: 130px;
-      height: 52px;
+      width: 110px;
+      height: 50px;
       border-radius: 14px;
       gap: 6px;
     }
-    .jump-arrow { font-size: 1.2rem; }
-    .jump-text { font-size: 0.85rem; }
+    .jump-arrow { font-size: 1.15rem; }
+    .jump-text { font-size: 0.82rem; }
   }
 </style>
 </head>
@@ -947,7 +908,7 @@
       <div class="ai-msg" id="aiMessage">
         喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>
         撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>
-        用左下角 <span class="hl">橫向搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>
+        用左下角 <span class="hl">橫向搖桿</span> 左右移動（推得越遠越快），撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>
         收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據 🎓
       </div>
       <button class="ai-action-btn" id="aiMoreBtn" aria-label="了解更多">
@@ -964,7 +925,6 @@
     </aside>
   </div>
 
-  <!-- ===== 底部：左横向摇杆（严格一维水平）+ 右跳跃 ===== -->
   <div class="controls-row">
     <div class="joystick" id="joystick" aria-label="移動搖桿">
       <div class="fill" id="fill"></div>
@@ -982,7 +942,7 @@
 <script>
 /* ============================================================
    香港經濟貢獻 · 無限爬升
-   严格一维水平摇杆 · 固定速度 · 放大閱讀
+   固定长度摇杆 · 死区 30% · 速度与偏移量成正比 · 放大閱讀
    ============================================================ */
 
 const LOGICAL_H = 720;
@@ -1014,9 +974,12 @@ const knob = document.getElementById('knob');
 /* ---------- 物理常數 ---------- */
 const GRAVITY = 0.62;
 const JUMP_V = -14.8;
-const MOVE_SPEED = 6.8;
+const MOVE_SPEED = 7.2;         // 最大水平速度（推满时）
 const PLAYER_W = 36, PLAYER_H = 44;
 const PLATFORM_H = 14;
+
+/* ★ 死区：30% */
+const JOYSTICK_DEADZONE = 0.30;
 
 /* ---------- 遊戲狀態 ---------- */
 let gameState = 'menu';
@@ -1073,9 +1036,7 @@ aiZoomBtn.addEventListener('click', (e) => {
 });
 
 /* ============================================================
-   严格一维水平摇杆
-   ★ 所有输入只取 clientX，绝不处理 clientY
-   ★ 摇杆头只使用 translateX，垂直位置由 top:50% + margin 固定
+   固定长度横向摇杆（死区 30% + 速度成正比）
    ============================================================ */
 const POS_GRAD = 'linear-gradient(90deg, rgba(77,216,255,0) 0%, rgba(77,216,255,.95) 100%)';
 const NEG_GRAD = 'linear-gradient(270deg, rgba(255,217,102,0) 0%, rgba(255,217,102,.95) 100%)';
@@ -1085,14 +1046,13 @@ const joystickState = {
   pointerId: null,
   maxOffset: 1,
   grabOffset: 0,
-  direction: 0     // -1 = 左, 0 = 停, 1 = 右
+  axis: 0          // ★ 连续值 -1..1（已扣除死区）
 };
 
 function measureJoystick() {
   joystickState.maxOffset = Math.max(1, (joystick.clientWidth - knob.offsetWidth) / 2);
 }
 
-/* ★ 只做水平位移：translateX，绝无 translateY */
 function renderJoystickVisual(offset) {
   const clamped = Math.max(-1, Math.min(1, offset));
   const x = clamped * joystickState.maxOffset;
@@ -1105,19 +1065,27 @@ function renderJoystickVisual(offset) {
   fill.style.opacity = w > 2 ? '1' : '0';
 }
 
-function setDirection(dir) {
-  joystickState.direction = dir;
-  keys.left = dir < 0;
-  keys.right = dir > 0;
+function setAxis(axis) {
+  joystickState.axis = axis;
+  keys.left = axis < -0.01;
+  keys.right = axis > 0.01;
 }
 
 function resetJoystick() {
-  setDirection(0);
+  setAxis(0);
   renderJoystickVisual(0);
   joystick.classList.remove('active');
 }
 
-/* ★ 只取 clientX，不处理 clientY */
+/* ★ 核心：raw 偏移 → 死区外重新映射到 0..1 速度比例 */
+function rawToAxis(raw) {
+  const abs = Math.abs(raw);
+  const dz = JOYSTICK_DEADZONE;
+  if (abs <= dz) return 0;
+  const normalized = (abs - dz) / (1 - dz);   // 死区边缘 0，推满 1
+  return Math.sign(raw) * Math.min(1, normalized);
+}
+
 function applyFromPointer(clientX) {
   const rect = joystick.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
@@ -1125,11 +1093,7 @@ function applyFromPointer(clientX) {
   const raw = dx / joystickState.maxOffset;
 
   renderJoystickVisual(raw);
-
-  const dz = 0.22;
-  if (raw < -dz) setDirection(-1);
-  else if (raw > dz) setDirection(1);
-  else setDirection(0);
+  setAxis(rawToAxis(raw));
 }
 
 joystick.addEventListener('pointerdown', (e) => {
@@ -1144,10 +1108,9 @@ joystick.addEventListener('pointerdown', (e) => {
 
   try { joystick.setPointerCapture(e.pointerId); } catch (_) {}
 
-  /* ★ 只用 clientX 计算抓取偏移，垂直位置无关 */
   const rect = joystick.getBoundingClientRect();
   const dx = e.clientX - (rect.left + rect.width / 2);
-  const off = dx - joystickState.direction * joystickState.maxOffset;
+  const off = dx - joystickState.axis * joystickState.maxOffset;
   joystickState.grabOffset = Math.abs(off) <= knob.offsetWidth / 2 ? off : 0;
 
   applyFromPointer(e.clientX);
@@ -1157,7 +1120,6 @@ joystick.addEventListener('pointerdown', (e) => {
 joystick.addEventListener('pointermove', (e) => {
   if (!joystickState.active || e.pointerId !== joystickState.pointerId) return;
   e.preventDefault();
-  /* ★ 只传 clientX，clientY 完全不参与 */
   applyFromPointer(e.clientX);
 });
 
@@ -1172,7 +1134,7 @@ function endJoystickDrag(e) {
   void knob.offsetWidth;
   joystick.classList.remove('active');
 
-  setDirection(0);
+  setAxis(0);
   renderJoystickVisual(0);
 }
 
@@ -1181,10 +1143,11 @@ joystick.addEventListener('pointercancel', endJoystickDrag);
 joystick.addEventListener('lostpointercapture', endJoystickDrag);
 joystick.addEventListener('contextmenu', e => e.preventDefault());
 
+/* 键盘：全速 ±1 */
 function updateJoystickVisualFromKeys() {
   if (joystickState.active) return;
   const dir = keys.right ? 1 : (keys.left ? -1 : 0);
-  setDirection(dir);
+  setAxis(dir);
   renderJoystickVisual(dir);
   if (dir !== 0) joystick.classList.add('active');
   else joystick.classList.remove('active');
@@ -1550,9 +1513,10 @@ function doJump() {
    更新
    ============================================================ */
 function update() {
-  const dir = joystickState.direction;
-  if (dir !== 0) {
-    player.vx = dir * MOVE_SPEED;
+  /* ★ 速度与摇杆偏移量成正比：axis 已经是扣除死区后的 0..1 比例 */
+  const axis = joystickState.axis;
+  if (Math.abs(axis) > 0.001) {
+    player.vx = axis * MOVE_SPEED;
   } else {
     player.vx *= 0.78;
   }
@@ -1665,13 +1629,13 @@ function startGame() {
   startBtn.disabled = true;
   setAIMessage(
     '喂！準備好未？🏃‍♂️<br><br>' +
-    '用左下角 <span class="hl">橫向搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
+    '用左下角 <span class="hl">橫向搖桿</span> 左右移動（推得越遠越快），撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
     '一路向上爬，收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽！<br><br>' +
     '收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據！<br><br>' +
     '字太細？撳右上角 <span class="hl">A+</span> 放大閱讀！<br><br>' +
     '小心紅色危險平台，踩到即 GG 呀！'
   );
-  aiTip.textContent = '💡 搖桿左右移動 · 跳躍掣空中再跳';
+  aiTip.textContent = '💡 搖桿推得越遠，移動越快';
   hideMoreButton();
   hapticTap();
 }
@@ -1848,7 +1812,7 @@ function drawMenu() {
   ctx.fillStyle = '#6ec8ff'; ctx.font = '600 15px "PingFang HK", sans-serif';
   ctx.fillText('CES 中三專題 · 挑機版', CW / 2, CH / 2 + 4);
   ctx.fillStyle = '#a8c8e0'; ctx.font = '14px "PingFang HK", sans-serif';
-  ctx.fillText('橫向搖桿左右移動，踩平台自動彈跳', CW / 2, CH / 2 + 62);
+  ctx.fillText('橫向搖桿左右移動（推得越遠越快）', CW / 2, CH / 2 + 62);
   ctx.fillText('跳躍掣可喺空中再跳一次', CW / 2, CH / 2 + 88);
   ctx.fillText('收集徽章 · 解鎖 AI 經濟知識卡', CW / 2, CH / 2 + 114);
   ctx.fillText('撳「📖 了解更多」睇深入數據 · A+ 放大閱讀', CW / 2, CH / 2 + 140);
@@ -1922,7 +1886,7 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
     keys.left = true;
     if (!joystickState.active) {
-      setDirection(-1);
+      setAxis(-1);
       renderJoystickVisual(-1);
       joystick.classList.add('active');
     }
@@ -1931,7 +1895,7 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowRight' || e.code === 'KeyD') {
     keys.right = true;
     if (!joystickState.active) {
-      setDirection(1);
+      setAxis(1);
       renderJoystickVisual(1);
       joystick.classList.add('active');
     }
@@ -1976,7 +1940,7 @@ resetBtn.addEventListener('click', () => {
   setAIMessage(
     '喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>' +
     '撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>' +
-    '用左下角 <span class="hl">橫向搖桿</span> 左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
+    '用左下角 <span class="hl">橫向搖桿</span> 左右移動（推得越遠越快），撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
     '收集徽章後可以撳 <span class="hl">📖 了解更多</span> 睇深入數據 🎓<br><br>' +
     '字太細？撳右上角 <span class="hl">A+</span> 放大閱讀！'
   );
