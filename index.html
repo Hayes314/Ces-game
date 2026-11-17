@@ -350,9 +350,7 @@
 
   .ai-tip { font-size: 0.66rem; color: var(--text-dim); text-align: right; min-height: 14px; flex-shrink: 0; }
 
-  /* ============================================================
-     底部控制栏：左移 / 右移 / 跳跃 按钮
-     ============================================================ */
+  /* 底部控制栏 */
   .controls-row {
     flex: 0 0 auto;
     display: flex;
@@ -367,11 +365,7 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5);
   }
 
-  .move-group {
-    display: flex;
-    gap: 12px;
-    flex: 0 0 auto;
-  }
+  .move-group { display: flex; gap: 12px; flex: 0 0 auto; }
 
   .pad-btn {
     position: relative;
@@ -402,20 +396,8 @@
     background: linear-gradient(180deg, #2a6a8f, #17425f);
   }
 
-  .pad-arrow {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: var(--cyan);
-    text-shadow: 0 0 10px rgba(77, 216, 255, 0.7);
-    line-height: 1;
-  }
-
-  .pad-sub {
-    font-size: 0.66rem;
-    color: var(--text-dim);
-    font-weight: 600;
-    letter-spacing: 1.5px;
-  }
+  .pad-arrow { font-size: 1.7rem; font-weight: 700; color: var(--cyan); text-shadow: 0 0 10px rgba(77, 216, 255, 0.7); line-height: 1; }
+  .pad-sub { font-size: 0.66rem; color: var(--text-dim); font-weight: 600; letter-spacing: 1.5px; }
 
   .jump-btn {
     flex: 0 0 auto;
@@ -434,8 +416,6 @@
     box-shadow: 0 5px 0 #8a5a10, 0 7px 22px rgba(201, 136, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
     font-family: inherit;
     touch-action: none;
-    position: relative;
-    overflow: hidden;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     outline: none;
   }
@@ -797,7 +777,6 @@
     </aside>
   </div>
 
-  <!-- ===== 底部：左移 / 右移 / 跳跃 按钮 ===== -->
   <div class="controls-row">
     <div class="move-group">
       <button class="pad-btn" id="btnLeft" aria-label="向左移動">
@@ -821,17 +800,17 @@
 <script>
 /* ============================================================
    香港經濟貢獻 · 無限爬升
-   固定世界寬度（難度一致） · 按鈕操控 · 1000米勝利
+   平台密度按頁面自適應 · 跨設備難度一致 · 1000米勝利
    ============================================================ */
 
-/* ---------- 固定邏輯世界 ---------- */
-const CH = 720;              // 邏輯高度（固定）
-const WORLD_W = 400;         // ★ 固定世界寬度，所有設備一致
-const BASE_Y = 560;          // 地面邏輯 Y
+/* ---------- 邏輯世界 ---------- */
+const CH = 720;
+const BASE_Y = 560;
 
-let viewW = 480;             // 可視邏輯寬度（隨屏幕變）
-let cameraX = 0;             // 水平相機
-let cameraY = 0;             // 垂直相機
+let viewW = 480;             // 可視邏輯寬度（動態）
+let WORLD_W = 500;           // 世界寬度（動態：max(viewW, 500)）
+let cameraX = 0;
+let cameraY = 0;
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -852,18 +831,25 @@ const btnLeft = document.getElementById('btnLeft');
 const btnRight = document.getElementById('btnRight');
 const btnJump = document.getElementById('btnJump');
 
-/* ---------- 物理常數（所有設備共用） ---------- */
+/* ---------- 物理常數（所有設備共用，難度一致） ---------- */
 const GRAVITY = 0.62;
 const JUMP_V = -14.8;
 const MOVE_SPEED = 6.4;
 const PLAYER_W = 36, PLAYER_H = 44;
 const PLATFORM_H = 14;
 
+/* 平台生成參數（固定，確保物理可達） */
+const PLAT_GAP_MIN = 86;        // 垂直間距下限
+const PLAT_GAP_RANGE = 36;      // 垂直間距隨機範圍（86~122）
+const PLAT_W_MIN = 75;          // 平台寬度下限
+const PLAT_W_RANGE = 35;        // 平台寬度隨機範圍（75~110）
+const PLAT_MAX_SHIFT = 130;     // 相鄰平台中心最大水平偏移（物理安全值）
+
 /* 目標高度 */
 const TARGET_ALTITUDE = 1000;
 
 /* ---------- 遊戲狀態 ---------- */
-let gameState = 'menu';       // menu | playing | gameover | victory
+let gameState = 'menu';
 let frame = 0;
 let score = 0;
 let badgeCount = 0;
@@ -939,7 +925,7 @@ btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); doJump(); }
 btnJump.addEventListener('contextmenu', e => e.preventDefault());
 
 /* ============================================================
-   畫布尺寸自適應（固定邏輯高度 720，世界寬度固定 400）
+   畫布尺寸自適應 —— 平台密度按頁面尺寸調整
    ============================================================ */
 function resizeCanvas() {
   const displayW = canvas.clientWidth;
@@ -953,7 +939,26 @@ function resizeCanvas() {
   const scale = displayH / CH;
   ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
 
+  const oldViewW = viewW;
   viewW = CH * (displayW / displayH);
+
+  /* ★ 世界寬度 = max(viewW, 500)
+     - 寬屏（平板／桌面）：世界寬度 = viewW，相機居中，看到整個世界
+     - 窄屏（手機）：世界寬度 = 500，相機跟隨，看到世界一部分
+     平台生成密度在兩種情況下保持合理 */
+  const oldWorldW = WORLD_W;
+  WORLD_W = Math.max(viewW, 500);
+
+  if (player) {
+    if (player.x + player.w > WORLD_W) player.x = Math.max(0, WORLD_W - player.w);
+    if (player.x < 0) player.x = 0;
+  }
+
+  /* 世界寬度大幅變化時，清理超出範圍的物件（旋轉屏幕時） */
+  if (Math.abs(WORLD_W - oldWorldW) > 80) {
+    platforms = platforms.filter(p => p.x + p.w <= WORLD_W + 20 && p.x >= -20);
+    badges = badges.filter(b => b.x >= 0 && b.x <= WORLD_W);
+  }
 
   updateCamera(true);
   draw();
@@ -963,16 +968,16 @@ function resizeCanvas() {
    相機
    ============================================================ */
 function updateCamera(instant) {
-  // 垂直：只向上
   const targetCamY = player.y - CH * 0.58;
   if (targetCamY < cameraY || instant) {
     cameraY = Math.min(cameraY, targetCamY);
   }
 
-  // 水平
   if (viewW >= WORLD_W) {
-    cameraX = (WORLD_W - viewW) / 2;   // 負值，世界居中
+    /* 視口比世界寬：世界居中 */
+    cameraX = (WORLD_W - viewW) / 2;
   } else {
+    /* 視口比世界窄：相機跟隨 */
     const deadzone = viewW * 0.28;
     const playerCenter = player.x + player.w / 2;
     const playerScreenX = playerCenter - cameraX;
@@ -987,30 +992,29 @@ function updateCamera(instant) {
 }
 
 /* ============================================================
-   平台生成（保證可達、跨設備難度一致）
+   平台生成 —— 固定垂直密度，水平合理分佈
    ============================================================ */
 function generatePlatforms() {
   while (highestY > cameraY - 460) {
-    const diff = Math.min(altitude / 700, 1);   // 0 → 1（約 700 米後滿難度）
+    const diff = Math.min(altitude / 700, 1);
 
-    /* 垂直間距：85 ~ 120，後期最多 +10（最大 130，仍遠低於跳躍高度 176） */
-    const gap = 85 + Math.random() * 35 + diff * 10;
+    /* 垂直間距固定：86~122（每屏約 6~7 個平台） */
+    const gap = PLAT_GAP_MIN + Math.random() * PLAT_GAP_RANGE;
 
-    /* 平台寬度：開頭 95~115，後期 70~95 */
-    let pw = 110 - diff * 30 + Math.random() * 20;
-    pw = Math.max(70, Math.min(118, pw));
+    /* 平台寬度固定：75~110（縮小少許讓後期稍難） */
+    let pw = PLAT_W_MIN + Math.random() * PLAT_W_RANGE;
+    pw = Math.max(70, pw - diff * 10);
 
     const py = highestY - gap;
 
-    /* 水平：與上一個平台中心距離有限，確保水平可達 */
+    /* 與上一個平台中心水平偏移，最大 130（物理安全） */
     const last = platforms[platforms.length - 1];
     const lastCenter = last.x + last.w / 2;
+    const maxShift = PLAT_MAX_SHIFT;
 
-    /* 最大中心偏移：早期 100，後期 115（仍遠低於跳躍水平可達 ~220） */
-    const maxShift = 95 + diff * 20;
     let center = lastCenter + (Math.random() * 2 - 1) * maxShift;
 
-    /* 夾在世界範圍內 */
+    /* 限制在世界範圍內 */
     const minC = 16 + pw / 2;
     const maxC = WORLD_W - 16 - pw / 2;
     center = Math.max(minC, Math.min(maxC, center));
@@ -1020,10 +1024,9 @@ function generatePlatforms() {
     platforms.push({ x: px, y: py, w: pw, h: PLATFORM_H, type: 'normal' });
     highestY = py;
 
-    /* 危險平台：120 米後，10% 概率，在普通平台旁邊同高度生成
-       寬度細，且不會取代安全平台，玩家永遠有安全落點 */
+    /* 危險平台：120 米後，10% 概率，與安全平台同高度並排 */
     if (altitude > 120 && Math.random() < 0.10) {
-      const dw = 38 + Math.random() * 14;   // 38~52
+      const dw = 38 + Math.random() * 14;
       const side = Math.random() < 0.5 ? -1 : 1;
       let dx = side < 0 ? px - dw - 10 : px + pw + 10;
       if (dx >= 10 && dx + dw <= WORLD_W - 10) {
@@ -1031,7 +1034,7 @@ function generatePlatforms() {
       }
     }
 
-    /* 徽章：45% 概率放在新平台上 */
+    /* 徽章：45% 概率 */
     if (Math.random() < 0.45) {
       const bt = BADGE_TYPES[Math.floor(Math.random() * BADGE_TYPES.length)];
       badges.push({
@@ -1280,6 +1283,8 @@ aiMoreBtn.addEventListener('click', (e) => { e.preventDefault(); toggleDetailVie
    初始化
    ============================================================ */
 function initGame() {
+  WORLD_W = Math.max(viewW, 500);
+
   player.x = WORLD_W / 2 - PLAYER_W / 2;
   player.y = BASE_Y - PLAYER_H;
   player.vx = 0; player.vy = 0; player.canDoubleJump = true;
@@ -1352,22 +1357,19 @@ function doJump() {
    更新
    ============================================================ */
 function update() {
-  /* 水平：按鈕固定速度 */
   const dir = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
   if (dir !== 0) player.vx = dir * MOVE_SPEED;
   else player.vx *= 0.78;
   player.x += player.vx;
 
-  /* 世界邊界（不再穿牆） */
+  /* 世界邊界 */
   if (player.x < 0) player.x = 0;
   if (player.x > WORLD_W - player.w) player.x = WORLD_W - player.w;
 
-  /* 垂直 */
   player.vy += GRAVITY;
   const prevY = player.y;
   player.y += player.vy;
 
-  /* 平台碰撞（只在下落時，從上方接觸） */
   if (player.vy > 0) {
     for (const p of platforms) {
       const prevBottom = prevY + player.h;
@@ -1389,11 +1391,9 @@ function update() {
   }
 
   updateCamera(false);
-
   generatePlatforms();
   cleanupObjects();
 
-  /* 徽章收集 */
   const pcx = player.x + player.w / 2;
   const pcy = player.y + player.h / 2;
   for (let i = badges.length - 1; i >= 0; i--) {
@@ -1402,7 +1402,6 @@ function update() {
     if (Math.hypot(dx, dy) < b.size / 2 + 20) collectBadge(b, i);
   }
 
-  /* 粒子 */
   for (let i = particles.length - 1; i >= 0; i--) {
     const pt = particles[i];
     pt.x += pt.vx; pt.y += pt.vy;
@@ -1411,25 +1410,21 @@ function update() {
     if (pt.life <= 0) particles.splice(i, 1);
   }
 
-  /* 高度 & 分數 */
   const newAlt = Math.max(0, Math.floor((BASE_Y - (player.y + player.h)) / 8));
   if (newAlt > altitude) {
     score += (newAlt - altitude) * 2;
     altitude = newAlt;
     updateHUD();
 
-    /* ★ 1000 米勝利 */
     if (altitude >= TARGET_ALTITUDE) {
       winGame();
       return;
     }
   }
 
-  /* 連擊計時 */
   if (comboTimer > 0) { comboTimer--; if (comboTimer === 0) combo = 0; }
   if (aiCooldown > 0) aiCooldown--;
 
-  /* 里程碑 */
   for (const m of MILESTONES) {
     if (altitude >= m.h && !milestonesHit.has(m.h)) {
       milestonesHit.add(m.h);
@@ -1441,7 +1436,6 @@ function update() {
     }
   }
 
-  /* 掉出世界 */
   if (player.y - cameraY > CH + 100) {
     endGame();
     return;
@@ -1496,7 +1490,6 @@ function startGame() {
   hapticTap();
 }
 
-/* 勝利：到達 1000 米 */
 function winGame() {
   gameState = 'victory';
   startBtn.textContent = '▶ 再挑機';
@@ -1520,7 +1513,6 @@ function winGame() {
   hapticTap();
 }
 
-/* 失敗：掉出世界 */
 function endGame() {
   gameState = 'gameover';
   startBtn.textContent = '▶ 再挑機';
@@ -1542,7 +1534,7 @@ function endGame() {
 }
 
 /* ============================================================
-   繪製：背景（視口坐標）
+   繪製：背景
    ============================================================ */
 function drawBackground() {
   const g = ctx.createLinearGradient(0, 0, 0, CH);
@@ -1553,7 +1545,6 @@ function drawBackground() {
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, viewW, CH);
 
-  /* 星星 */
   const starPar = cameraY * 0.08;
   ctx.fillStyle = 'rgba(200, 230, 255, 0.5)';
   const starCount = Math.ceil(viewW / 8) + 30;
@@ -1568,7 +1559,6 @@ function drawBackground() {
   }
   ctx.globalAlpha = 1;
 
-  /* 樓群剪影 */
   const factor = 0.38;
   const parY = cameraY * factor;
   const rowH = 175;
@@ -1616,7 +1606,7 @@ function drawBackground() {
 }
 
 /* ============================================================
-   繪製：世界物件（世界坐標，調用前已 translate(-cameraX, -cameraY)）
+   繪製：世界物件
    ============================================================ */
 function drawPlatforms() {
   for (const p of platforms) {
@@ -1761,7 +1751,7 @@ function drawParticles() {
 }
 
 /* ============================================================
-   繪製：HUD / 頁面（視口坐標）
+   繪製：HUD / 頁面
    ============================================================ */
 function drawHUD() {
   if (combo > 1) {
@@ -1777,7 +1767,6 @@ function drawHUD() {
     ctx.globalAlpha = 1;
   }
 
-  /* 進度條（靠近 1000 米時顯示） */
   if (gameState === 'playing' && altitude > 700) {
     const prog = Math.min(1, altitude / TARGET_ALTITUDE);
     const barW = Math.min(viewW - 60, 320);
@@ -1843,7 +1832,6 @@ function drawEndScreen() {
   ctx.textAlign = 'center';
 
   if (isWin) {
-    /* 勝利頁面 */
     const pulse = 1 + Math.sin(frame * 0.08) * 0.05;
     ctx.save();
     ctx.translate(viewW / 2, CH / 2 - 130);
@@ -1880,7 +1868,6 @@ function drawEndScreen() {
     ctx.globalAlpha = 1;
 
   } else {
-    /* 失敗頁面 */
     ctx.fillStyle = '#ff6b6b';
     ctx.font = 'bold 38px "PingFang HK", sans-serif';
     ctx.shadowColor = '#7f1d1d';
@@ -1958,7 +1945,7 @@ function loop(ts) {
 }
 
 /* ============================================================
-   畫布點擊 / 鍵盤
+   輸入
    ============================================================ */
 canvas.addEventListener('pointerdown', (e) => {
   e.preventDefault();
@@ -2005,7 +1992,6 @@ document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: fals
 document.addEventListener('dragstart', (e) => e.preventDefault());
 document.addEventListener('selectstart', (e) => e.preventDefault());
 
-/* 開始 / 重設 */
 startBtn.addEventListener('click', startGame);
 
 resetBtn.addEventListener('click', () => {
