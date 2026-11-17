@@ -350,7 +350,6 @@
 
   .ai-tip { font-size: 0.66rem; color: var(--text-dim); text-align: right; min-height: 14px; flex-shrink: 0; }
 
-  /* 底部控制栏 */
   .controls-row {
     flex: 0 0 auto;
     display: flex;
@@ -431,7 +430,6 @@
   .jump-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; }
   .jump-hint { font-size: 0.68rem; opacity: 0.9; letter-spacing: 0.5px; }
 
-  /* 响应式 */
   @media (max-width: 1400px) { .ai-panel { flex: 0 0 320px; } }
 
   @media (max-width: 1200px) {
@@ -761,7 +759,7 @@
         喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>
         撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>
         用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>
-        目標：爬到 <span class="hl">1000 米</span>，沿途收集徽章學經濟知識 🎓
+        平台間距會越嚟越大，記住用 <span class="hl">二段跳</span> 跨越！🎯
       </div>
       <button class="ai-action-btn" id="aiMoreBtn" aria-label="了解更多">
         <span class="state-summary">
@@ -800,15 +798,15 @@
 <script>
 /* ============================================================
    香港經濟貢獻 · 無限爬升
-   平台密度按頁面自適應 · 跨設備難度一致 · 1000米勝利
+   平台間距充分利用二段跳 · 1000米勝利
    ============================================================ */
 
 /* ---------- 邏輯世界 ---------- */
 const CH = 720;
 const BASE_Y = 560;
 
-let viewW = 480;             // 可視邏輯寬度（動態）
-let WORLD_W = 500;           // 世界寬度（動態：max(viewW, 500)）
+let viewW = 480;
+let WORLD_W = 500;
 let cameraX = 0;
 let cameraY = 0;
 
@@ -831,19 +829,32 @@ const btnLeft = document.getElementById('btnLeft');
 const btnRight = document.getElementById('btnRight');
 const btnJump = document.getElementById('btnJump');
 
-/* ---------- 物理常數（所有設備共用，難度一致） ---------- */
+/* ---------- 物理常數 ---------- */
 const GRAVITY = 0.62;
 const JUMP_V = -14.8;
 const MOVE_SPEED = 6.4;
 const PLAYER_W = 36, PLAYER_H = 44;
 const PLATFORM_H = 14;
 
-/* 平台生成參數（固定，確保物理可達） */
-const PLAT_GAP_MIN = 86;        // 垂直間距下限
-const PLAT_GAP_RANGE = 36;      // 垂直間距隨機範圍（86~122）
-const PLAT_W_MIN = 75;          // 平台寬度下限
-const PLAT_W_RANGE = 35;        // 平台寬度隨機範圍（75~110）
-const PLAT_MAX_SHIFT = 130;     // 相鄰平台中心最大水平偏移（物理安全值）
+/* ============================================================
+   ★ 平台生成核心參數（考慮二段跳）
+   
+   物理分析：
+   - 單次跳躍最高高度 = 14.8² / (2 × 0.62) ≈ 176 邏輯單位
+   - 二段跳在最高點再跳：176 + 13.6²/(2×0.62) ≈ 325
+   - 實際遊玩：二段跳通常在上升中約 80~120 高度處觸發
+     總高度可達 176 + 80 ≈ 256，保守安全值約 240
+   
+   因此垂直間距上限設為 210 完全安全，有充足餘量。
+   ============================================================ */
+const PLAT_GAP_BASE_MIN = 100;      // 低海拔最小間距
+const PLAT_GAP_BASE_RANGE = 40;     // 低海拔隨機範圍（100~140）
+const PLAT_GAP_GROWTH_MIN = 50;     // 高海拔額外增加的間距下限
+const PLAT_GAP_GROWTH_RANGE = 20;   // 高海拔額外隨機範圍（額外加 50~70）
+
+const PLAT_W_MIN = 70;              // 平台寬度下限
+const PLAT_W_RANGE = 35;            // 平台寬度隨機範圍
+const PLAT_MAX_SHIFT = 130;         // 水平偏移上限（安全）
 
 /* 目標高度 */
 const TARGET_ALTITUDE = 1000;
@@ -925,7 +936,7 @@ btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); doJump(); }
 btnJump.addEventListener('contextmenu', e => e.preventDefault());
 
 /* ============================================================
-   畫布尺寸自適應 —— 平台密度按頁面尺寸調整
+   畫布尺寸自適應
    ============================================================ */
 function resizeCanvas() {
   const displayW = canvas.clientWidth;
@@ -939,13 +950,8 @@ function resizeCanvas() {
   const scale = displayH / CH;
   ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
 
-  const oldViewW = viewW;
   viewW = CH * (displayW / displayH);
 
-  /* ★ 世界寬度 = max(viewW, 500)
-     - 寬屏（平板／桌面）：世界寬度 = viewW，相機居中，看到整個世界
-     - 窄屏（手機）：世界寬度 = 500，相機跟隨，看到世界一部分
-     平台生成密度在兩種情況下保持合理 */
   const oldWorldW = WORLD_W;
   WORLD_W = Math.max(viewW, 500);
 
@@ -954,7 +960,6 @@ function resizeCanvas() {
     if (player.x < 0) player.x = 0;
   }
 
-  /* 世界寬度大幅變化時，清理超出範圍的物件（旋轉屏幕時） */
   if (Math.abs(WORLD_W - oldWorldW) > 80) {
     platforms = platforms.filter(p => p.x + p.w <= WORLD_W + 20 && p.x >= -20);
     badges = badges.filter(b => b.x >= 0 && b.x <= WORLD_W);
@@ -974,10 +979,8 @@ function updateCamera(instant) {
   }
 
   if (viewW >= WORLD_W) {
-    /* 視口比世界寬：世界居中 */
     cameraX = (WORLD_W - viewW) / 2;
   } else {
-    /* 視口比世界窄：相機跟隨 */
     const deadzone = viewW * 0.28;
     const playerCenter = player.x + player.w / 2;
     const playerScreenX = playerCenter - cameraX;
@@ -992,29 +995,30 @@ function updateCamera(instant) {
 }
 
 /* ============================================================
-   平台生成 —— 固定垂直密度，水平合理分佈
+   ★ 平台生成 —— 利用二段跳，垂直間距漸進增大
+   低海拔：100~140
+   高海拔：150~210（仍遠低於二段跳安全可達 240）
    ============================================================ */
 function generatePlatforms() {
   while (highestY > cameraY - 460) {
-    const diff = Math.min(altitude / 700, 1);
+    const diff = Math.min(altitude / 800, 1);   // 800 米後滿難度
 
-    /* 垂直間距固定：86~122（每屏約 6~7 個平台） */
-    const gap = PLAT_GAP_MIN + Math.random() * PLAT_GAP_RANGE;
+    /* 垂直間距：低海拔 100~140，高海拔 150~210 */
+    const gapMin = PLAT_GAP_BASE_MIN + diff * PLAT_GAP_GROWTH_MIN;
+    const gapRange = PLAT_GAP_BASE_RANGE + diff * PLAT_GAP_GROWTH_RANGE;
+    const gap = gapMin + Math.random() * gapRange;
 
-    /* 平台寬度固定：75~110（縮小少許讓後期稍難） */
-    let pw = PLAT_W_MIN + Math.random() * PLAT_W_RANGE;
-    pw = Math.max(70, pw - diff * 10);
+    /* 平台寬度：後期略窄（75~110 → 65~95） */
+    let pw = PLAT_W_MIN + Math.random() * PLAT_W_RANGE - diff * 8;
+    pw = Math.max(62, pw);
 
     const py = highestY - gap;
 
-    /* 與上一個平台中心水平偏移，最大 130（物理安全） */
+    /* 水平偏移：固定上限 130（玩家有足夠水平時間移動） */
     const last = platforms[platforms.length - 1];
     const lastCenter = last.x + last.w / 2;
-    const maxShift = PLAT_MAX_SHIFT;
+    let center = lastCenter + (Math.random() * 2 - 1) * PLAT_MAX_SHIFT;
 
-    let center = lastCenter + (Math.random() * 2 - 1) * maxShift;
-
-    /* 限制在世界範圍內 */
     const minC = 16 + pw / 2;
     const maxC = WORLD_W - 16 - pw / 2;
     center = Math.max(minC, Math.min(maxC, center));
@@ -1066,7 +1070,7 @@ const BADGE_TYPES = [
 ];
 
 /* ============================================================
-   AI 知識庫（摘要）
+   AI 知識庫
    ============================================================ */
 const AI_KNOWLEDGE = {
   finance: [
@@ -1362,7 +1366,6 @@ function update() {
   else player.vx *= 0.78;
   player.x += player.vx;
 
-  /* 世界邊界 */
   if (player.x < 0) player.x = 0;
   if (player.x > WORLD_W - player.w) player.x = WORLD_W - player.w;
 
@@ -1480,12 +1483,12 @@ function startGame() {
   setAIMessage(
     '喂！準備好未？🏃‍♂️<br><br>' +
     '用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！' +
-    '一路向上爬，收集徽章，我會沿途爆啲<span class="hl">香港對國家經濟貢獻</span>嘅冷知識你聽！<br><br>' +
+    '平台間距會越嚟越大，記住用 <span class="hl">二段跳</span> 跨越！<br><br>' +
     '🎯 <span class="hl">目標：爬到 1000 米！</span><br><br>' +
     '字太細？撳右上角 <span class="hl">A+</span> 放大閱讀！<br><br>' +
     '小心紅色危險平台，踩到即 GG 呀！'
   );
-  aiTip.textContent = '💡 左移 / 右移 / 跳躍 · 目標 1000 米';
+  aiTip.textContent = '💡 左移 / 右移 / 二段跳 · 目標 1000 米';
   hideMoreButton();
   hapticTap();
 }
@@ -1812,7 +1815,7 @@ function drawMenu() {
   ctx.fillStyle = '#a8c8e0';
   ctx.font = '13px "PingFang HK", sans-serif';
   ctx.fillText('◀ ▶ 左右移動，跳躍掣空中再跳', viewW / 2, CH / 2 + 66);
-  ctx.fillText('踩平台自動彈跳，一路向上', viewW / 2, CH / 2 + 90);
+  ctx.fillText('平台間距漸增，用二段跳跨越', viewW / 2, CH / 2 + 90);
   ctx.fillText('收集徽章 · 解鎖 AI 經濟知識卡', viewW / 2, CH / 2 + 114);
   ctx.fillText('撳「📖 了解更多」睇深入數據 · A+ 放大閱讀', viewW / 2, CH / 2 + 138);
 
@@ -2004,7 +2007,7 @@ resetBtn.addEventListener('click', () => {
     '喂！我係 <span class="hl">小港</span>，你嘅 AI 經濟顧問 🤖<br><br>' +
     '撳 <span class="hl">▶ 開始</span> 或 <span class="hl">空白鍵</span> 開波！<br><br>' +
     '用底部 <span class="hl">◀ ▶</span> 掣左右移動，撳 <span class="hl">跳躍</span> 掣喺空中再跳一次！<br><br>' +
-    '🎯 目標：爬到 <span class="hl">1000 米</span>，沿途收集徽章學經濟知識 🎓'
+    '平台間距會越嚟越大，記住用 <span class="hl">二段跳</span> 跨越！🎯'
   );
   aiTip.textContent = '💡 空白鍵 / 點擊畫面開始';
   hideMoreButton();
